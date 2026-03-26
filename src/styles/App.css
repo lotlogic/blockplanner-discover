@@ -69,19 +69,12 @@ main {
   background-image: url("/images/backgrounds/home_bg.jpg");
   background-position: center;
   background-size: cover;
-  filter: blur(2px) saturate(0.95);
-  transform: scale(1.04);
+  filter: none;
+  transform: none;
 }
 
 .homeBg:after {
-  background:
-    radial-gradient(circle at top, rgb(248 246 228 / 0.38), transparent 42%),
-    linear-gradient(
-      180deg,
-      rgb(248 246 228 / 0.72) 0%,
-      rgb(255 255 255 / 0.82) 48%,
-      rgb(248 246 228 / 0.9) 100%
-    );
+  display: none;
 }
 
 section {
@@ -106,10 +99,14 @@ svg {
 }
 
 button {
-  cursor: pointer;
+  cursor: default;
+
+  &:enabled {
+    cursor: pointer;
+  }
 
   &:disabled {
-    cursor: auto !important;
+    cursor: not-allowed !important;
   }
 }
 

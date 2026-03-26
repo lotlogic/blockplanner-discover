@@ -7,6 +7,7 @@ import {
   useState,
   type ComponentProps,
   type FormEvent,
+  type Ref,
 } from "react";
 
 export type AddressInputProps = ComponentProps<"input"> & {
@@ -14,6 +15,7 @@ export type AddressInputProps = ComponentProps<"input"> & {
   placeholder?: string;
   handlePlaceSelect: (place: google.maps.places.Place | null) => void;
   handleInputChange: () => void;
+  inputRef?: Ref<HTMLInputElement>;
 };
 
 // hard coded bound for Canberra
@@ -29,6 +31,7 @@ export const AddressInput = ({
   placeholder,
   handlePlaceSelect,
   handleInputChange,
+  inputRef,
 }: AddressInputProps) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [showListing, setShowListing] = useState(false);
@@ -71,6 +74,7 @@ export const AddressInput = ({
     <span className="relative block">
       <Search className="absolute top-1/2 left-3 size-6 -translate-y-1/2 text-gray-300" />
       <input
+        ref={inputRef}
         type="search"
         name={name}
         placeholder={placeholder}

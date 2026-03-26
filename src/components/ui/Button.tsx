@@ -32,6 +32,8 @@ export const Button = (props: ButtonProps) => {
     "inline-flex",
     "items-center",
     "justify-center",
+    "cursor-pointer",
+    "enabled:hover:cursor-pointer",
     "gap-2",
     "font-medium",
     "px-4",
