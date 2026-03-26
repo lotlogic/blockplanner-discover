@@ -50,26 +50,38 @@ main {
   }
 }
 
+.homeBg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .homeBg:before,
 .homeBg:after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
 }
 
 .homeBg:before {
   background-image: url("/images/backgrounds/home_bg.jpg");
   background-position: center;
   background-size: cover;
-  filter: blur(4px);
+  filter: blur(2px) saturate(0.95);
+  transform: scale(1.04);
 }
 
 .homeBg:after {
-  background-color: #fff;
-  opacity: 0.75;
+  background:
+    radial-gradient(circle at top, rgb(248 246 228 / 0.38), transparent 42%),
+    linear-gradient(
+      180deg,
+      rgb(248 246 228 / 0.72) 0%,
+      rgb(255 255 255 / 0.82) 48%,
+      rgb(248 246 228 / 0.9) 100%
+    );
 }
 
 section {

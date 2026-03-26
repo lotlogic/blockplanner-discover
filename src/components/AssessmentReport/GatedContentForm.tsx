@@ -107,7 +107,7 @@ const GatedContentForm = (props: GatedContentProps) => {
                 ])}
               />
               <span className="text-sm text-left">
-                I agree to BlockPlanner's
+                I agree to BlockPlanner's{" "}
                 <a href="/privacy" className="font-semibold" target="_blank">
                   Privacy Policy
                 </a>{" "}

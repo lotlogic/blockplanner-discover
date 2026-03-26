@@ -12,9 +12,17 @@ const paymentFormSchema = z.object({
   email: z
     .email({ pattern: z.regexes.rfc5322Email, message: "Invalid email format" })
     .trim(),
-  intention: z.enum(["Develop", "Joint venture", "Sell", "Exploring"], {
-    message: "Please select from above",
-  }),
+  intention: z.enum(
+    [
+      "Sell",
+      "Develop myself",
+      "Have someone develop for me",
+      "Open to options",
+    ],
+    {
+      message: "Please select from above",
+    },
+  ),
   clientName: z.string().trim().min(2, "Please enter a name"),
   clientPhone: z
     .string()
@@ -139,14 +147,13 @@ export const PaymentModal = (props: Props) => {
   return (
     <TextModal open={props.isOpen} onClose={closeModal}>
       <Heading tag="h2" size="h2" className="text-center">
-        Want an assessment that considers your current house?
+        Want a report that considers what's actually on your block?
       </Heading>
 
       <p className="text-center text-lg">
-        Upgrade to the full PDF report and see what changes are possible when
-        your existing dwelling is taken into account. You'll get clearer,
-        plain-English guidance on likely constraints, opportunities, and next
-        steps for your property, delivered straight to your inbox.
+        Upgrade to the full PDF report for a clearer picture of what's worth
+        pursuing. We look at your existing house, trees, easements, setbacks
+        and access, then send practical next steps straight to your inbox.
       </p>
 
       <form
@@ -178,11 +185,13 @@ export const PaymentModal = (props: Props) => {
                 <option value="Sell">
                   I want to sell and understand what it's worth
                 </option>
-                <option value="Develop">I want to develop it myself</option>
-                <option value="Joint venture">
+                <option value="Develop myself">
+                  I want to develop it myself
+                </option>
+                <option value="Have someone develop for me">
                   I want someone to develop it for me
                 </option>
-                <option value="Just looking">
+                <option value="Open to options">
                   I'm open to options &mdash; help me figure it out
                 </option>
               </select>
@@ -279,7 +288,7 @@ export const PaymentModal = (props: Props) => {
             </p>
           )}
         </div>
-        <Button label="Purchase report" type="submit" />
+        <Button label="Request your report" type="submit" />
       </form>
     </TextModal>
   );

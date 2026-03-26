@@ -1,8 +1,6 @@
 import type { GeoApi } from "@/@types/api";
-import Heading from "@/components//ui/Heading";
-import { classList } from "@/utils/tailwind";
 import { toTitleCase } from "@/utils/text";
-import { CircleCheck } from "lucide-react";
+import { buildFreeReportCards } from "./free-report";
 
 type Props = {
   savedAddress: string;
@@ -10,7 +8,6 @@ type Props = {
 };
 
 export const ReportContent = ({ report, savedAddress }: Props) => {
-  // create zone text
   const zoneText = [
     report?.zone.zoneCode,
     toTitleCase(report?.zone.properties?.LAND_USE_POLICY_DESC),
@@ -18,150 +15,155 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
     .filter(Boolean)
     .join(" - ");
 
-  // combine rule matches by pathway
-  const rules: Record<
-    string,
-    { confidence?: string | null; explanation: string }[]
-  > = {};
-  report?.lotCheckRules.matches.forEach((match) => {
-    if (match.pathway && match.explanationResolved) {
-      rules[match.pathway] = rules[match.pathway] || [];
-      rules[match.pathway].push({
-        confidence: match.confidence,
-        explanation: match.explanationResolved,
-      });
-    }
-  });
-  const ruleMatches = Object.entries(rules);
-
-  // commencement date
-  const today = new Date();
-  const commencementDate = import.meta.env.VITE_COMMENCEMENT_DATE
-    ? new Date(import.meta.env.VITE_COMMENCEMENT_DATE)
-    : undefined;
-
-  // report map
   const address = report?.formattedAddress || savedAddress;
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  const cards = buildFreeReportCards(report);
+  const mapQuery =
+    typeof report?.location?.lat === "number" &&
+    typeof report?.location?.lng === "number"
+      ? `${report.location.lat},${report.location.lng}`
+      : encodeURIComponent(address);
+  const mapSrc = apiKey
+    ? `https://maps.googleapis.com/maps/api/staticmap?size=1100x420&scale=2&zoom=18&maptype=satellite&markers=color:0xC4622D|${mapQuery}&key=${apiKey}`
+    : undefined;
+  const reportMonth = new Intl.DateTimeFormat("en-AU", {
+    month: "long",
+    year: "numeric",
+  }).format(new Date());
 
   return (
-    <>
-      <div className="flex flex-col h-full">
-        <Heading tag="h2" size="h2" className="">
-          {address.replace(", Australia", "")}
-        </Heading>
-        <div className="flex flex-wrap gap-x-7 text-lg">
-          {!!zoneText && <p>Zone: {zoneText}</p>}
-          {!!report?.lotCheckRules.blockAreaSqm && (
-            <p>Block size: {report?.lotCheckRules.blockAreaSqm} m&sup2;</p>
-          )}
+    <div className="text-bp-blueGum">
+      <div className="flex items-center justify-between bg-bp-blueGum px-6 py-5 md:px-10">
+        <div>
+          <p className="text-[0.62rem] font-medium uppercase tracking-[0.3em] text-bp-sand/70">
+            BlockPlanner
+          </p>
+          <h2 className="mt-1 text-2xl font-semibold text-bp-sand md:text-3xl">
+            Property Assessment
+          </h2>
         </div>
-        <img
-          src={`https://maps.googleapis.com/maps/api/staticmap?size=550x225&scale=2&zoom=17&maptype=satellite&markers=${encodeURIComponent(address)}&key=${apiKey}`}
-          className="my-4"
-        />
-        <Heading tag="h3" size="h4" className="font-semibold mb-4">
-          What the new rules allow on a block this size
-        </Heading>
-        {commencementDate && today < commencementDate && (
-          <p className="text-base -mt-4 mb-5">
-            Based on draft rules. Final rules expected on{" "}
-            {commencementDate
-              .toLocaleDateString("en-AU", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })
-              .replace(/\//g, " ")}
+        <p className="text-right text-[0.62rem] font-medium uppercase tracking-[0.24em] text-bp-sand/60">
+          Free report
+        </p>
+      </div>
+
+      <div className="border-b border-bp-blueGum/10 bg-bp-sand px-6 py-6 md:px-10">
+        <h3 className="text-2xl font-semibold leading-tight text-bp-blueGum md:text-[2rem]">
+          {address.replace(", Australia", "")}
+        </h3>
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+          {!!report?.zone.zoneCode && (
+            <span className="rounded-full bg-bp-blueGum px-3 py-1 font-medium uppercase tracking-[0.12em] text-bp-sand">
+              {report.zone.zoneCode}
+            </span>
+          )}
+          {!!zoneText && (
+            <span className="rounded-full border border-bp-blueGum/15 bg-white px-3 py-1 text-bp-blueGum/75">
+              {zoneText}
+            </span>
+          )}
+          {!!report?.lotCheckRules.blockAreaSqm && (
+            <span className="rounded-full border border-bp-blueGum/15 bg-white px-3 py-1 text-bp-blueGum/75">
+              {report.lotCheckRules.blockAreaSqm.toLocaleString("en-AU")} m²
+            </span>
+          )}
+          <span className="rounded-full border border-bp-blueGum/15 bg-white px-3 py-1 text-bp-blueGum/75">
+            {reportMonth}
+          </span>
+        </div>
+      </div>
+
+      <div className="relative h-52 overflow-hidden border-b border-bp-blueGum/10 bg-bp-blueGum/8 md:h-62">
+        {mapSrc ? (
+          <img
+            src={mapSrc}
+            alt={`Satellite image of ${address}`}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="h-full w-full bg-[linear-gradient(135deg,#bbc5bf,#d9d5c8)]" />
+        )}
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(73,79,74,0.06),rgba(73,79,74,0.22))]" />
+        <p className="absolute bottom-4 left-4 rounded-full bg-black/35 px-3 py-1 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-white/85">
+          Property snapshot
+        </p>
+      </div>
+
+      <div className="px-6 py-8 md:px-10 md:py-10">
+        <div className="border-b border-bp-blueGum/12 pb-3">
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-bp-eucalypt">
+            What the current planning rules allow on a property this size
+          </p>
+        </div>
+
+        <div className="mt-6 space-y-4">
+          {cards.map((card) => {
+            const statusStyles =
+              card.status === "possible"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                : card.status === "review"
+                  ? "border-amber-200 bg-amber-50 text-amber-800"
+                  : "border-stone-200 bg-stone-50 text-stone-700";
+            const statusLabel =
+              card.status === "possible"
+                ? "Possible"
+                : card.status === "review"
+                  ? "Needs review"
+                  : "Not available";
+
+            return (
+              <article
+                key={card.key}
+                className="grid gap-4 rounded-sm border border-bp-blueGum/10 bg-white p-5 shadow-[0_10px_28px_rgba(73,79,74,0.06)] md:grid-cols-[1fr_auto] md:items-start md:p-6"
+              >
+                <div>
+                  <h4 className="text-xl font-semibold text-bp-blueGum">
+                    {card.title}
+                  </h4>
+                  <p className="mt-1 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-bp-blueGum/55">
+                    {card.technical}
+                  </p>
+                  <p className="mt-4 text-sm leading-7 text-bp-blueGum/78 md:text-[0.96rem]">
+                    {card.body}
+                  </p>
+                </div>
+
+                <span
+                  className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusStyles}`}
+                >
+                  {statusLabel}
+                </span>
+              </article>
+            );
+          })}
+        </div>
+
+        {!cards.length && (
+          <p className="py-20 text-center text-lg text-bp-blueGum/70">
+            We couldn&apos;t build the summary cards for this zone from the
+            current rule set.
           </p>
         )}
 
-        <div className="grow">
-          {!!ruleMatches.length && (
-            <ul className="block space-y-3 text-sm">
-              {ruleMatches.map((rule, i) => {
-                const iconClass =
-                  rule[1][0].confidence === "Low"
-                    ? "text-error"
-                    : rule[1][0].confidence === "Medium"
-                      ? "text-warning"
-                      : "text-success";
-                const badgeClass =
-                  rule[1][0].confidence === "Low"
-                    ? "bg-red-50 text-error border-red-200"
-                    : rule[1][0].confidence === "Medium"
-                      ? "bg-amber-50 text-warning border-amber-200"
-                      : "bg-green-50 text-success border-green-200";
-                const badgeLabel =
-                  rule[1][0].confidence === "Low"
-                    ? "???"
-                    : rule[1][0].confidence === "Medium"
-                      ? "???"
-                      : "Allowed";
-
-                return (
-                  <li
-                    key={"rule_" + i}
-                    className="relative rounded-lg border border-gray-200 bg-card p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-                  >
-                    <div className="flex gap-3">
-                      <div
-                        className={`mt-0.5 text-300 rounded-full ${iconClass}`}
-                      >
-                        <CircleCheck width="20" height="20" className="" />
-                      </div>
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                          <strong className="block text-base font-semibold [&:first-letter]:capitalize [&+p]:mt-1">
-                            {rule[0]}
-                          </strong>
-                          <span
-                            className={`text-xs font-medium px-2 py-0.5 rounded-full border ${badgeClass}`}
-                          >
-                            {badgeLabel}
-                          </span>
-                        </div>
-                        {rule[1].map((item, i) => (
-                          <p key={"p_" + i} className="mt-2">
-                            {item.explanation}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-          {!ruleMatches.length && (
-            <p className="text-xl text-center pt-25">
-              The Missing Middle changes do not materially apply to this zone.
-            </p>
-          )}
+        <div className="mt-8 rounded-sm border border-bp-blueGum/10 bg-bp-sand px-5 py-5 md:px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-bp-eucalypt">
+            Disclaimer
+          </p>
+          <p className="mt-3 text-sm leading-7 text-bp-blueGum/72">
+            General information only, not professional advice. Covers
+            freestanding houses in RZ1 and RZ2 zones. Based on block size and
+            zoning, site conditions may vary. Trees, setbacks, easements,
+            overlays and the position of the existing home can change what is
+            realistic in practice.
+          </p>
         </div>
-
-        <hr className="mt-8 mb-6 border-gray-300" />
-        <ul className="block space-y-1 [&>li]:pl-6 text-sm text-gray-400">
-          <li className="relative">
-            <div
-              className={classList([
-                "absolute top-0.75 left-0.5 size-3.5",
-                "flex items-center justify-center",
-                "text-xs text-white",
-                "bg-gray-400 rounded-full",
-              ])}
-            >
-              i
-            </div>
-            This guide is based on block size and zoning only.
-          </li>
-          <li>
-            It doesn't account for overlays, setbacks, trees, or what's already
-            on your site. Our full report takes these into account.
-          </li>
-        </ul>
       </div>
-    </>
+
+      <div className="flex flex-col gap-2 border-t border-bp-blueGum/10 bg-stone-50 px-6 py-4 text-xs uppercase tracking-[0.16em] text-bp-blueGum/55 md:flex-row md:items-center md:justify-between md:px-10">
+        <span>blockplanner.com.au</span>
+        <span>Covers freestanding houses in RZ1 and RZ2 only</span>
+      </div>
+    </div>
   );
 };
 

@@ -1,6 +1,5 @@
 import type { GeoApi } from "@/@types/api";
 import Heading from "@/components/ui/Heading";
-import Logo from "@/images/BlockPlanner-Inline.svg?react";
 import {
   identifyUser,
   trackCtaClick,
@@ -22,6 +21,7 @@ import OffZoneForm, { type OffZoneFormValues } from "./OffZoneForm";
 import ReportContent from "./ReportContent";
 
 type ReportSaves = Record<string, { email: string; expiry: number }>;
+const MIN_LOADING_MS = 1800;
 
 export const FreeBlockAssessmentReport = () => {
   const [report, setReport] = useState<GeoApi>();
@@ -45,29 +45,55 @@ export const FreeBlockAssessmentReport = () => {
     fetch API data
   ****************************************************/
   useEffect(() => {
+    let cancelled = false;
+
     const fetchData = async () => {
+      const startedAt = Date.now();
       try {
         const address = searchParams.get("address");
-        if (!address) throw new Error("Missing query parameter - address");
+        const lat = searchParams.get("lat");
+        const lng = searchParams.get("lng");
+
+        if (!address && (!lat || !lng))
+          throw new Error("Missing query parameter - address");
+
+        const params = new URLSearchParams();
+        if (lat && lng) {
+          params.set("lat", lat);
+          params.set("lng", lng);
+          if (address) params.set("address", address);
+        } else if (address) {
+          params.set("address", address);
+        }
 
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/geo/act-zone?address=${address}`,
+          `${import.meta.env.VITE_API_URL}/api/geo/act-zone?${params.toString()}`,
         );
 
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const result = await response.json();
-        setReport(result);
+        if (!cancelled) setReport(result);
       } catch (error: any) {
-        setError(error.message);
+        if (!cancelled) setError(error.message);
       } finally {
-        setIsLoading(false);
+        const elapsed = Date.now() - startedAt;
+        const waitFor = Math.max(0, MIN_LOADING_MS - elapsed);
+
+        if (waitFor > 0) {
+          await new Promise((resolve) => window.setTimeout(resolve, waitFor));
+        }
+
+        if (!cancelled) setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [searchParams]);
 
   /****************************************************
     tracking for successful lookup
@@ -263,11 +289,7 @@ export const FreeBlockAssessmentReport = () => {
               transition={{ duration: 0.4, ease: "easeOut" }}
               className="relative mt-10"
             >
-              <div className="bg-white p-10 md:px-16 md:pb-16 shadow-lg aspect-[1/1.414]">
-                <Logo
-                  width={200}
-                  className="w-40 lg:w-50 ml-auto -mr-5 -mt-6 lg:-mr-10"
-                />
+              <div className="overflow-hidden rounded-sm bg-white shadow-[-10px_0_22px_rgba(0,0,0,0.08),0_18px_50px_rgba(0,0,0,0.12)]">
                 {isLoading ? (
                   <LoadingMessage />
                 ) : error ? (
@@ -279,8 +301,8 @@ export const FreeBlockAssessmentReport = () => {
             </m.div>
 
             <section className="text-gray-400 text-center mt-8">
-              This free tool provides general information only, not professional
-              advice. Covers RZ1 (Suburban) and RZ2 (Suburban Core) zones.
+              General information only, not professional advice. Covers
+              freestanding houses in RZ1 and RZ2 zones.
             </section>
           </div>
 

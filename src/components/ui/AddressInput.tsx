@@ -77,10 +77,10 @@ export const AddressInput = ({
         value={inputValue}
         onInput={(event) => handleInput(event)}
         className={classList(
-          "w-full px-4 py-3 pl-12",
-          "bg-white placeholder-gray-500",
-          "border border-gray-300 rounded-md",
-          "outline-primary-hover outline-offset-2",
+          "w-full px-5 py-4 pl-13 text-base md:text-lg",
+          "bg-white/95 placeholder-gray-500",
+          "border border-white/70 rounded-xl shadow-[0_10px_30px_rgba(73,79,74,0.08)]",
+          "outline-primary-hover outline-offset-3",
           "focus-visible:outline-2 focus-visible:border-transparent",
         )}
         autoComplete="off"
@@ -93,7 +93,7 @@ export const AddressInput = ({
             "absolute top-full left-0",
             "w-full bg-white",
             "mt-1",
-            "border border-gray-300 rounded-md",
+            "border border-gray-200 rounded-xl shadow-[0_20px_40px_rgba(73,79,74,0.14)]",
             "divide-y divide-gray-300",
             "overflow-hidden",
             "z-10",
@@ -103,7 +103,7 @@ export const AddressInput = ({
             return (
               <li
                 key={index}
-                className="p-2 transition-colors cursor-pointer hover:bg-bp-eucalypt hover:text-white"
+                className="px-4 py-3 text-left transition-colors cursor-pointer hover:bg-bp-eucalypt hover:text-white"
                 onClick={() => handleSuggestionClick(suggestion)}
               >
                 {suggestion.placePrediction?.text.text}

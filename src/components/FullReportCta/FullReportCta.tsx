@@ -96,10 +96,7 @@ export const FullReportCta = ({ data, isDisabled, location }: Props) => {
         <InfoGraphic width={70} className="mx-auto" fill="#494f4a" />
 
         <Heading tag="h3" size="h4" className="mt-0! mb-0">
-          <span>
-            Take the next step - a detailed report that considers what's already
-            on your block.
-          </span>
+          <span>Want to know what&apos;s actually realistic for your property?</span>
         </Heading>
 
         <div
@@ -116,10 +113,10 @@ export const FullReportCta = ({ data, isDisabled, location }: Props) => {
           ])}
         >
           <p className="">
-            The free results show what the rules allow. The full report looks at
-            what's actually on your property &mdash; your home, trees,
-            easements, setbacks, access &mdash; so you get a clearer picture of
-            what's realistic.
+            These results are based on size and zone alone. The full report
+            looks at what&apos;s physically on your land &mdash; where your home
+            sits, rear yard depth, trees, easements and access &mdash; so you
+            get an honest picture of what&apos;s worth pursuing.
           </p>
 
           <hr className="my-4 border-gray-300" />
@@ -161,17 +158,16 @@ export const FullReportCta = ({ data, isDisabled, location }: Props) => {
           ])}
         >
           <p className="mt-4">
-            Already know it's worth pursuing? Skip ahead - talk to us directly
-            about a professional feasibility assessment covering your planning
-            options, design and whether it's financially viable.
-            <br />
-            <button
-              className="font-medium text-bp-blueGum! underline decoration-transparent! underline-offset-2 hover:decoration-bp-blueGum! transition-colors duration-200"
-              onClick={() => setContactModalOpen(true)}
-            >
-              Get in touch
-            </button>
+            Already know it&apos;s worth pursuing? Skip ahead and talk to us
+            directly about a professional feasibility assessment covering your
+            planning options, design and whether it&apos;s financially viable.
           </p>
+          <Button
+            label="Talk to us directly"
+            variant="outline"
+            className="mt-4 min-h-14 w-full border-bp-blueGum/12! bg-white! px-6 py-4 text-bp-blueGum! hover:bg-gray-50! hover:text-bp-blueGum! focus-visible:bg-gray-50! focus-visible:text-bp-blueGum! focus-visible:outline-bp-blueGum!"
+            onClick={() => setContactModalOpen(true)}
+          />
         </div>
 
         <PaymentModal
