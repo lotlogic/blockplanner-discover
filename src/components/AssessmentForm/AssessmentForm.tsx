@@ -75,7 +75,7 @@ export const FreeBlockAssessment = () => {
           <Heading
             tag="h1"
             size="h1"
-            className="lg:text-[3.1rem] text-[3.1rem] leading-[1] md:text-[3.1rem]"
+            className="lg:text-[3.1rem] text-[2.1rem] leading-[1] md:text-[3.1rem]"
           >
             Discover the potential of your property.
           </Heading>

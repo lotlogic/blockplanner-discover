@@ -28,9 +28,9 @@ export const Header = () => {
             <Link
               to="/"
               className="flex items-center rounded-md hover:opacity-80 transition-opacity"
-              aria-label="Meals on Wheels NSW - Go to homepage"
+              aria-label="BlockPlanner - Go to homepage"
             >
-              <Logo fill="#f8f6e4" height={80} />
+              <Logo fill="#f8f6e4" className="h-13 w-auto md:h-20" />
             </Link>
             <div>
               <nav className="block" role="menubar">
