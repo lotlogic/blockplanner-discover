@@ -1,4 +1,4 @@
-import type { GeoApi, LotRule } from "@/@types/api";
+import type { GeoApi, LotCheckPathwayCard, LotRule } from "@/@types/api";
 
 export type FreeReportCardStatus = "possible" | "not_available" | "review";
 
@@ -53,6 +53,15 @@ const PATHWAY_ORDER = [
   "co-housing",
 ];
 
+const CARD_ORDER = [
+  "granny_flat",
+  "dual_occupancy",
+  "unit_titling",
+  "subdivision",
+  "multi_unit",
+  "co_housing",
+];
+
 const normalizePathwayKey = (value?: string | null) =>
   String(value || "")
     .trim()
@@ -62,6 +71,11 @@ const normalizeParameterKey = (value?: string | null) =>
   String(value || "")
     .trim()
     .toLowerCase();
+
+const normalizeCardBody = (value?: string | null) =>
+  String(value || "")
+    .trim()
+    .replace(/\s+/g, " ");
 
 const formatArea = (value?: number | null) =>
   typeof value === "number" && Number.isFinite(value)
@@ -156,9 +170,48 @@ const buildPathwaySummary = (
   };
 };
 
+const buildFreeReportCardsFromBackend = (
+  backendCards?: LotCheckPathwayCard[] | null,
+): FreeReportCard[] => {
+  const cards = (backendCards ?? [])
+    .filter(
+      (card) =>
+        card &&
+        typeof card.pathwayKey === "string" &&
+        typeof card.title === "string" &&
+        typeof card.status === "string",
+    )
+    .map((card) => ({
+      key: String(card.pathwayKey),
+      title: String(card.title),
+      technical: String(card.technicalLabel || ""),
+      body: normalizeCardBody(card.body),
+      status: card.status,
+    }));
+
+  if (!cards.length) {
+    return [];
+  }
+
+  return cards.sort((a, b) => {
+    const aIndex = CARD_ORDER.indexOf(a.key);
+    const bIndex = CARD_ORDER.indexOf(b.key);
+    const safeA = aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex;
+    const safeB = bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex;
+    return safeA - safeB;
+  });
+};
+
 export const buildFreeReportCards = (
   report?: GeoApi,
 ): FreeReportCard[] => {
+  const backendCards = buildFreeReportCardsFromBackend(
+    report?.lotCheckRules?.cards,
+  );
+  if (backendCards.length) {
+    return backendCards;
+  }
+
   const matches = report?.lotCheckRules?.matches || [];
   const grouped = new Map<string, LotRule[]>();
 

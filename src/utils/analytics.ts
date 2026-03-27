@@ -1,4 +1,4 @@
-import type { GeoApi, LotRule } from "@/@types/api";
+import type { GeoApi, LotCheckPathwayCard, LotRule } from "@/@types/api";
 import mixpanel from "mixpanel-browser";
 
 const DEFAULT_MIXPANEL_TOKEN = "96b3f842f9f82bc71b1419a1c8b3d873";
@@ -86,6 +86,14 @@ const buildRuleOutputs = (matches?: LotRule[]) =>
     evaluation: match.evaluation,
   }));
 
+const buildPathwayCardOutputs = (cards?: LotCheckPathwayCard[]) =>
+  (cards ?? []).map((card) => ({
+    pathway_key: card.pathwayKey,
+    title: card.title,
+    status: card.status,
+    technical_label: card.technicalLabel,
+  }));
+
 const getParcelId = (report: GeoApi) => {
   const block = report.block;
   if (block?.blockKey) return String(block.blockKey);
@@ -119,6 +127,7 @@ export const trackLookupPerformed = (
     block_size: getBlockSize(report),
     zone,
     rule_outputs: buildRuleOutputs(report.lotCheckRules?.matches),
+    pathway_cards: buildPathwayCardOutputs(report.lotCheckRules?.cards),
     timestamp: new Date().toISOString(),
   });
 };

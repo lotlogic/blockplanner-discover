@@ -11,6 +11,7 @@ export type GeoApi = {
     zoneCode: string;
     blockAreaSqm: number;
     matches: LotRule[];
+    cards?: LotCheckPathwayCard[];
   };
 };
 
@@ -97,4 +98,19 @@ export type LotRule = {
     currentMeetsRule: boolean | null;
     draftMeetsRule: boolean | null;
   };
+};
+
+export type LotCheckPathwayCard = {
+  zone: string | null;
+  pathwayKey: string | null;
+  title: string | null;
+  technicalLabel: string | null;
+  status: "possible" | "review" | "not_available";
+  body: string | null;
+  source: string | null;
+  notes: string | null;
+  logicNotes: string | null;
+  maxGfaSqm: number | null;
+  alternativePathwayKey: string | null;
+  alternativeMinBlockSqm: number | null;
 };
