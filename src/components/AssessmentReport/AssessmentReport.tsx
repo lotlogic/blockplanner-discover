@@ -144,11 +144,6 @@ export const FreeBlockAssessmentReport = () => {
   const checkoutData = {
     email,
     address: report?.formattedAddress || savedAddress,
-    reportId:
-      report?.block?.blockKey ||
-      (report?.block?.objectId != null
-        ? String(report.block.objectId)
-        : undefined),
     suburb: report?.block?.properties?.DIVISION_NAME || undefined,
     zone: report?.lotCheckRules?.zoneCode || report?.zone?.zoneCode || "",
     blockSizeM2: report?.lotCheckRules?.blockAreaSqm,

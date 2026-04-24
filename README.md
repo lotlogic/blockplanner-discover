@@ -55,7 +55,7 @@ The frontend expects a backend at `VITE_API_URL` that exposes:
 - `GET /api/geo/act-zone?address=<urlencoded>`
   - Returns JSON compatible with `src/@types/api.ts` (zone + `lotCheckRules`)
 - `POST /api/stripe/create-checkout-session`
-  - Request body includes (where available): `site`, `intention`, `email` (alias), `clientEmail`, `address`, `suburb`, `blockSizeM2`, `zone`, `reportId`
+  - Request body includes (where available): `site`, `intention`, `email` (alias), `clientEmail`, `address`, `suburb`, `blockSizeM2`, `zone`
   - Response body: `{ "url": string }` where `url` is the Stripe-hosted Checkout URL
 
 ## Analytics (Mixpanel)

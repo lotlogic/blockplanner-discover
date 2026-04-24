@@ -177,7 +177,6 @@ export const FullReportCta = ({ data, isDisabled, location }: Props) => {
           // data
           email={data?.email}
           address={data?.address}
-          reportId={data?.reportId}
           suburb={data?.suburb}
           blockSizeM2={data?.blockSizeM2}
           zone={data?.zone}

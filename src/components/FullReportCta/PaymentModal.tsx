@@ -35,7 +35,6 @@ export type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 export type CheckoutData = {
   email?: string;
   address?: string;
-  reportId?: string;
   clientName?: string;
   clientEmail?: string;
   clientPhone?: string;
@@ -98,7 +97,6 @@ export const PaymentModal = (props: Props) => {
             // Backwards-compatible alias
             email: formData.email,
 
-            reportId: props.reportId,
             clientName: formData.clientName ?? props.clientName,
             clientEmail: props.clientEmail ?? formData.email,
             clientPhone: formData.clientPhone ?? props.clientPhone,
