@@ -36,30 +36,30 @@ export const HomePage = () => {
       ></m.div>
       <Main>
         <AssessmentForm />
-        <section className="mt-24! max-w-none! bg-bp-blueGum px-0! py-20 text-bp-sand md:py-28">
+        <section className="mt-24! max-w-none! bg-bp-blueGum px-0! py-16 text-bp-sand md:py-22">
           <div className="mx-auto max-w-360 px-4 text-center md:px-8">
             <p className="text-sm font-semibold uppercase text-bp-sand/90">
               Simple & free
             </p>
-            <h2 className="mx-auto mt-8 max-w-4xl text-4xl font-semibold leading-tight text-bp-sand md:text-6xl">
+            <h2 className="mx-auto mt-6 max-w-4xl text-4xl font-semibold leading-[1.08] text-bp-sand md:text-6xl md:leading-[1.04]">
               Understanding your property in three steps
             </h2>
-            <p className="mx-auto mt-8 max-w-4xl text-base leading-8 text-bp-sand/80 md:text-lg">
+            <p className="mx-auto mt-5 max-w-4xl text-base leading-7 text-bp-sand/80 md:text-lg md:leading-7">
               No planning knowledge required. We translate ACT planning rules
               into plain language and tell you exactly what matters for your
               block.
             </p>
 
-            <div className="mt-16 grid gap-12 md:mt-24 md:grid-cols-3 md:gap-10">
+            <div className="mt-12 grid gap-9 md:mt-16 md:grid-cols-3 md:gap-8">
               {steps.map((step) => (
                 <article key={step.number} className="text-center">
-                  <div className="mx-auto flex size-22 items-center justify-center rounded-full border border-bp-sand/75 text-2xl font-semibold text-bp-sand md:size-24">
+                  <div className="mx-auto flex size-20 items-center justify-center rounded-full border border-bp-sand/75 text-2xl font-semibold text-bp-sand md:size-22">
                     {step.number}
                   </div>
-                  <h3 className="mt-10 text-base font-semibold uppercase text-bp-sand md:text-lg">
+                  <h3 className="mt-7 text-base font-semibold uppercase leading-tight text-bp-sand md:text-lg">
                     {step.title}
                   </h3>
-                  <p className="mx-auto mt-5 max-w-md text-sm leading-7 text-bp-sand/78 md:text-base md:leading-8">
+                  <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-bp-sand/78 md:text-base md:leading-7">
                     {step.body}
                   </p>
                 </article>
