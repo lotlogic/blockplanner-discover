@@ -200,6 +200,7 @@ export const FreeBlockAssessmentReport = () => {
         name: formData.clientName,
         email: formData.email,
         phone: formData.clientPhone,
+        intent: formData.intent,
       };
 
       try {
@@ -253,7 +254,7 @@ export const FreeBlockAssessmentReport = () => {
       <OffZoneForm
         isOpen={showOffZone}
         setIsOpen={setShowOffZone}
-        address={savedAddress}
+        address={report?.formattedAddress || savedAddress}
         onSubmit={handleOffZone}
       />
 
@@ -297,7 +298,8 @@ export const FreeBlockAssessmentReport = () => {
 
             <section className="text-gray-400 text-center mt-8">
               General information only, not professional advice. Covers
-              freestanding houses in RZ1 and RZ2 zones.
+              freestanding houses in RZ1 and RZ2 zones. Results based on block
+              size and zone - site conditions assessed separately.
             </section>
           </div>
 

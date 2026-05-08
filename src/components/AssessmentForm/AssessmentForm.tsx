@@ -111,14 +111,26 @@ export const FreeBlockAssessment = () => {
 
           <p className="mx-auto mt-8 max-w-3xl text-[0.82rem] leading-6 text-bp-blueGum/72 md:text-[0.85rem]">
             General information only, not professional advice. Covers
-            freestanding houses in RZ1 and RZ2 zones. Based on block size and
-            zoning, site conditions may vary.{" "}
+            freestanding houses in RZ1 and RZ2 zones. Results based on block
+            size and zone - site conditions assessed separately.
+          </p>
+
+          <p className="mx-auto mt-4 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[0.78rem] leading-5 text-bp-blueGum/72 md:text-[0.82rem]">
+            <a
+              href="/privacy"
+              className="font-medium underline decoration-transparent underline-offset-3 transition-colors duration-200 hover:decoration-current"
+            >
+              Privacy policy
+            </a>
+            <span aria-hidden="true">·</span>
             <a
               href="/disclaimer"
-              className="font-medium underline decoration-transparent underline-offset-3 hover:decoration-current transition-colors duration-200"
+              className="font-medium underline decoration-transparent underline-offset-3 transition-colors duration-200 hover:decoration-current"
             >
-              Read full disclaimer
+              Read Disclaimer
             </a>
+            <span aria-hidden="true">·</span>
+            <span>© 2026 BlockPlanner Pty Ltd</span>
           </p>
         </div>
       </div>

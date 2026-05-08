@@ -74,8 +74,13 @@ const normalizeParameterKey = (value?: string | null) =>
 
 const normalizeCardBody = (value?: string | null) =>
   String(value || "")
+    .replace(/\r\n?/g, "\n")
+    .split("\n")
+    .map((line) => line.trim())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
     .trim()
-    .replace(/\s+/g, " ");
+    .replace(/[ \t]{2,}/g, " ");
 
 const formatArea = (value?: number | null) =>
   typeof value === "number" && Number.isFinite(value)

@@ -2,9 +2,58 @@ import type { GeoApi } from "@/@types/api";
 import { toTitleCase } from "@/utils/text";
 import { buildFreeReportCards } from "./free-report";
 
+const LVC_FORM_URL =
+  "https://forms.monday.com/forms/316e54ed01893dd1b82597c400914642?r=apse2";
+
+const LVC_WAIVER_URL =
+  "https://www.revenue.act.gov.au/rates-and-property-charges/lease-variation-charge-lvc/rz1-lease-variation-charge-lvc-partial-waiver";
+
 type Props = {
   savedAddress: string;
   report?: GeoApi;
+};
+
+const renderReportText = (text: string) => {
+  const [body, rules] = text.split(/\n-{3,}\n/);
+  const paragraphs = body
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+  const ruleLines = (rules || "")
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  return (
+    <>
+      {paragraphs.map((paragraph) => (
+        <p
+          key={paragraph}
+          className="mt-4 whitespace-pre-line text-sm leading-7 text-bp-blueGum/78 first:mt-0 md:text-[0.96rem]"
+        >
+          {paragraph}
+        </p>
+      ))}
+      {!!ruleLines.length && (
+        <div className="mt-5 rounded-sm bg-bp-sand px-4 py-4 text-xs leading-6 text-bp-blueGum/68">
+          {ruleLines.map((line) =>
+            line.toLowerCase() === "the rule behind this:" ? (
+              <p
+                key={line}
+                className="font-semibold uppercase text-bp-eucalypt"
+              >
+                The rule behind this
+              </p>
+            ) : (
+              <p key={line} className="mt-2 first:mt-0">
+                {line}
+              </p>
+            ),
+          )}
+        </div>
+      )}
+    </>
+  );
 };
 
 export const ReportContent = ({ report, savedAddress }: Props) => {
@@ -90,7 +139,64 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
       </div>
 
       <div className="px-6 py-8 md:px-10 md:py-10">
-        <div className="border-b border-bp-blueGum/12 pb-3">
+        <div className="rounded-sm border border-bp-blueGum/10 bg-bp-sand px-5 py-5 md:px-6">
+          <p className="text-xs font-semibold uppercase text-bp-eucalypt">
+            Before you read your results
+          </p>
+          <div className="mt-4 space-y-4 text-sm leading-7 text-bp-blueGum/76">
+            <p>
+              <strong>Your Crown lease.</strong> In the ACT, residential land is
+              held under a Crown lease, not freehold title. Your lease has a
+              purpose clause that says what can be built on the block. Many
+              leases in Canberra are limited to a single dwelling. If yours is,
+              that restriction applies regardless of what the planning rules
+              permit - a lease variation through a development application is
+              required before a second dwelling can be built or sold separately,
+              and a Lease Variation Charge (LVC) applies. Depending on your
+              suburb, this can range from around $46,000 to well over $300,000.
+            </p>
+            <p>
+              If you are in RZ1 and considering dual occupancy, check whether
+              you qualify for the{" "}
+              <a
+                href={LVC_WAIVER_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold underline underline-offset-3"
+              >
+                ACT Government's RZ1 LVC Partial Waiver
+              </a>
+              .
+            </p>
+            <p>
+              BlockPlanner is actively engaging with the ACT Government to push
+              for fairer LVC treatment for resident-led projects. If the LVC
+              would affect the feasibility of your project, we would like to
+              hear from you.{" "}
+              <a
+                href={LVC_FORM_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold underline underline-offset-3"
+              >
+                Share your experience with the LVC - takes 2 minutes
+              </a>
+              .
+            </p>
+            <p>
+              <strong>Your easements.</strong> Your title may also have
+              easements - legal rights held by third parties over part of your
+              land. You cannot build over an easement, and depending where one
+              sits it can significantly affect what is practical in the rear
+              yard. The easement data in this report comes from ACTmapi
+              deposited plans and is indicative only - not all easements
+              registered on title will appear here. A title search confirms what
+              actually applies.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 border-b border-bp-blueGum/12 pb-3">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-bp-eucalypt">
             What the current planning rules allow on a property this size
           </p>
@@ -123,9 +229,7 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
                   <p className="mt-1 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-bp-blueGum/55">
                     {card.technical}
                   </p>
-                  <p className="mt-4 text-sm leading-7 text-bp-blueGum/78 md:text-[0.96rem]">
-                    {card.body}
-                  </p>
+                  <div className="mt-4">{renderReportText(card.body)}</div>
                 </div>
 
                 <span
@@ -145,16 +249,73 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
           </p>
         )}
 
+        <div className="mt-8 rounded-sm border border-bp-blueGum/10 bg-white px-5 py-5 md:px-6">
+          <h4 className="text-lg font-semibold text-bp-blueGum">
+            There is more to the picture.
+          </h4>
+          <div className="mt-4 space-y-4 text-sm leading-7 text-bp-blueGum/76">
+            <p>
+              The options above are based on your block size and zone. They tell
+              you what the planning rules permit in principle. What actually
+              works on your specific block depends on what is already there.
+            </p>
+            <p>
+              <strong>Trees.</strong> Significant trees are protected under the
+              Urban Forest Act 2023. A protected tree has a Tree Protection Zone
+              - an area around the trunk and canopy where you cannot build or
+              excavate without approval. Depending where trees sit, they can
+              reduce usable space or rule out certain configurations entirely.
+              This assessment flags significant trees based on canopy size from
+              aerial imagery. We also separately check the ACTmapi Registered
+              Trees layer - individually listed trees with a higher level of
+              protection.
+            </p>
+            <p>
+              <strong>Easements.</strong> Depending on where an easement sits on
+              your block, it can significantly affect where a second dwelling
+              can go. The paid report maps what's visible from ACTmapi for your
+              specific block.
+            </p>
+            <p>
+              <strong>Heritage.</strong> If the property is within a heritage
+              overlay, development proposals need to respond to heritage
+              requirements. Our assessment uses the ACTmapi heritage layer. If
+              heritage applies, free preliminary advice may be available through
+              the ACT Government's heritage architecture service.
+            </p>
+            <p>
+              <strong>Sewer.</strong> Where the sewer connection sits affects
+              where a second dwelling can be serviced and what it costs.
+            </p>
+            <p>
+              <strong>District policies.</strong> Additional planning
+              requirements may apply on top of zone rules depending on your
+              suburb - particularly in the Inner North and City districts.
+            </p>
+            <p>
+              <strong>Subdivision and Leasing Policy.</strong> For blocks where
+              subdivision is being considered, NI2023-540 F01 (Subdivision
+              Policy) and F02 (Leasing Policy) apply in addition to the zone
+              rules. A registered town planner can advise on what this means for
+              a specific proposal.
+            </p>
+            <p>
+              This report is a preliminary read. It is not a professional
+              feasibility assessment and does not replace advice from a
+              registered town planner. The paid BlockPlanner report covers all
+              of the above in detail for your specific block.
+            </p>
+          </div>
+        </div>
+
         <div className="mt-8 rounded-sm border border-bp-blueGum/10 bg-bp-sand px-5 py-5 md:px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-bp-eucalypt">
             Disclaimer
           </p>
           <p className="mt-3 text-sm leading-7 text-bp-blueGum/72">
             General information only, not professional advice. Covers
-            freestanding houses in RZ1 and RZ2 zones. Based on block size and
-            zoning, site conditions may vary. Trees, setbacks, easements,
-            overlays and the position of the existing home can change what is
-            realistic in practice.
+            freestanding houses in RZ1 and RZ2 zones. Results based on block
+            size and zone - site conditions assessed separately.
           </p>
         </div>
       </div>

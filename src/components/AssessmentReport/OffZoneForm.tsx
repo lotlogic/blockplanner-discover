@@ -3,9 +3,16 @@ import Heading from "@/components//ui/Heading";
 import TextModal from "@/components//ui/TextModal";
 import { classList } from "@/utils/tailwind";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, Phone, User } from "lucide-react";
+import { ChevronDown, Mail, Phone, Target, User } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+
+const intentOptions = [
+  "Sell",
+  "Develop myself",
+  "Have someone develop for me",
+  "Open to options",
+] as const;
 
 const offZoneFormSchema = z.object({
   email: z
@@ -19,8 +26,10 @@ const offZoneFormSchema = z.object({
     .string()
     .trim()
     .regex(/^[0-9+().\-\s]{7,}$/i, "Please enter a valid phone number"),
-  address: z.string().trim(),
-  company: z.string(),
+  intent: z.enum(intentOptions, {
+    message: "Please select your intent",
+  }),
+  company: z.string().optional(),
 });
 
 export type OffZoneFormValues = z.infer<typeof offZoneFormSchema>;
@@ -51,19 +60,20 @@ const OffZoneForm = (props: Props) => {
     <TextModal open={props.isOpen} onClose={closeModal}>
       <div className="text-center">
         <Heading tag="h2" size="h2">
-          Your property is outside the free report zones - but you can still get
-          your free assessment.
+          Your property is in a different zone - but you can still get your
+          free assessment.
         </Heading>
 
         <p className="pt-2 text-balance">
-          The free report covers RZ1 and RZ2 properties, where the missing
-          middle reforms have the most direct impact. Your property is in a
-          higher-density zone - RZ3, RZ4, or RZ5 - where different rules apply
-          so we assess these individually.
+          The free report covers RZ1 and RZ2 properties. Your property is in a
+          different zone - RZ3, RZ4, RZ5, industrial, commercial, or a
+          designated area - where different rules apply, so we assess these
+          individually.
         </p>
 
         <p className="pt-2 text-balance">
-          Leave your name and email and we'll be in touch to get started.
+          Leave your details and Mitch will call you back - usually within one
+          business day.
         </p>
 
         <Heading tag="p" size="h4">
@@ -97,6 +107,43 @@ const OffZoneForm = (props: Props) => {
             {errors.clientName && (
               <p className="text-xs text-error pl-1 mt-1" role="alert">
                 {errors.clientName.message as string}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label>
+              <span className="sr-only">Intent</span>
+              <span className="relative">
+                <Target className="pointer-events-none absolute top-1/2 left-3 size-6 -translate-y-1/2 text-gray-300" />
+                <ChevronDown className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-gray-500" />
+                <select
+                  defaultValue=""
+                  {...register("intent")}
+                  aria-invalid={errors.intent ? "true" : "false"}
+                  className={classList(
+                    "w-full py-3 pl-12 pr-10 appearance-none",
+                    "bg-white text-gray-700",
+                    "border border-gray-300 rounded-md",
+                    "focus-visible:border-transparent",
+                    "invalid:text-gray-500",
+                  )}
+                >
+                  <option value="" disabled>
+                    What are you hoping to do?
+                  </option>
+                  <option value="Sell">Sell</option>
+                  <option value="Develop myself">Develop myself</option>
+                  <option value="Have someone develop for me">
+                    Have someone develop for me
+                  </option>
+                  <option value="Open to options">Open to options</option>
+                </select>
+              </span>
+            </label>
+            {errors.intent && (
+              <p className="text-xs text-error pl-1 mt-1" role="alert">
+                {errors.intent.message as string}
               </p>
             )}
           </div>
@@ -153,7 +200,7 @@ const OffZoneForm = (props: Props) => {
               </p>
             )}
           </div>
-          <input type="hidden" name="company" />
+          <input type="hidden" {...register("company")} />
           <Button className="mt-4" label="Send my details" type="submit" />
         </form>
       </div>
