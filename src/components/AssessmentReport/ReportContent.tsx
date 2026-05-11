@@ -143,56 +143,72 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
           <p className="text-xs font-semibold uppercase text-bp-eucalypt">
             Before you read your results
           </p>
-          <div className="mt-4 space-y-4 text-sm leading-7 text-bp-blueGum/76">
-            <p>
-              <strong>Your Crown lease.</strong> In the ACT, residential land is
-              held under a Crown lease, not freehold title. Your lease has a
-              purpose clause that says what can be built on the block. Many
-              leases in Canberra are limited to a single dwelling. If yours is,
-              that restriction applies regardless of what the planning rules
-              permit - a lease variation through a development application is
-              required before a second dwelling can be built or sold separately,
-              and a Lease Variation Charge (LVC) applies. Depending on your
-              suburb, this can range from around $46,000 to well over $300,000.
-            </p>
-            <p>
-              If you are in RZ1 and considering dual occupancy, check whether
-              you qualify for the{" "}
-              <a
-                href={LVC_WAIVER_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="font-semibold underline underline-offset-3"
-              >
-                ACT Government's RZ1 LVC Partial Waiver
-              </a>
-              .
-            </p>
-            <p>
-              BlockPlanner is actively engaging with the ACT Government to push
-              for fairer LVC treatment for resident-led projects. If the LVC
-              would affect the feasibility of your project, we would like to
-              hear from you.{" "}
-              <a
-                href={LVC_FORM_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="font-semibold underline underline-offset-3"
-              >
-                Share your experience with the LVC - takes 2 minutes
-              </a>
-              .
-            </p>
-            <p>
-              <strong>Your easements.</strong> Your title may also have
-              easements - legal rights held by third parties over part of your
-              land. You cannot build over an easement, and depending where one
-              sits it can significantly affect what is practical in the rear
-              yard. The easement data in this report comes from ACTmapi
-              deposited plans and is indicative only - not all easements
-              registered on title will appear here. A title search confirms what
-              actually applies.
-            </p>
+          <div className="mt-4 space-y-5 text-sm leading-6 text-bp-blueGum/76">
+            <section>
+              <h4 className="font-semibold text-bp-blueGum/90">
+                Your Crown lease
+              </h4>
+              <p className="mt-2">
+                In the ACT, residential land is held under a Crown lease, not
+                freehold title. Your lease has a purpose clause that says what
+                can be built on the block. Many leases in Canberra are limited
+                to a single dwelling. If yours is, that restriction applies
+                regardless of what the planning rules permit - a lease variation
+                through a development application is required before a second
+                dwelling can be built or sold separately, and a Lease Variation
+                Charge (LVC) applies. Depending on your suburb, this can range
+                from around $46,000 to well over $300,000.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-semibold text-bp-blueGum/90">
+                Lease Variation Charge
+              </h4>
+              <p className="mt-2">
+                If you are in RZ1 and considering dual occupancy, check whether
+                you qualify for the{" "}
+                <a
+                  href={LVC_WAIVER_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold underline underline-offset-3"
+                >
+                  ACT Government's RZ1 LVC Partial Waiver
+                </a>
+                .
+              </p>
+              <p className="mt-3">
+                BlockPlanner is actively engaging with the ACT Government to
+                push for fairer LVC treatment for resident-led projects. If the
+                LVC would affect the feasibility of your project, we would like
+                to hear from you.{" "}
+                <a
+                  href={LVC_FORM_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold underline underline-offset-3"
+                >
+                  Share your experience with the LVC - takes 2 minutes
+                </a>
+                .
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-semibold text-bp-blueGum/90">
+                Your easements
+              </h4>
+              <p className="mt-2">
+                Your title may also have easements - legal rights held by third
+                parties over part of your land. You cannot build over an
+                easement, and depending where one sits it can significantly
+                affect what is practical in the rear yard. The easement data in
+                this report comes from ACTmapi deposited plans and is indicative
+                only - not all easements registered on title will appear here. A
+                title search confirms what actually applies.
+              </p>
+            </section>
           </div>
         </div>
 
