@@ -110,9 +110,14 @@ export const FreeBlockAssessment = () => {
           </div>
 
           <p className="mx-auto mt-8 max-w-3xl text-[0.82rem] leading-6 text-bp-blueGum/72 md:text-[0.85rem]">
-            General information only, not professional advice. Covers
-            freestanding houses in RZ1 and RZ2 zones. Results based on block
-            size and zone - site conditions assessed separately.
+            General information only, not professional advice. Results are based
+            on block size and zone - site conditions are assessed separately.{" "}
+            <a
+              href="/disclaimer"
+              className="font-medium underline decoration-transparent underline-offset-3 transition-colors duration-200 hover:decoration-current"
+            >
+              Read our full disclaimer.
+            </a>
           </p>
 
           <p className="mx-auto mt-4 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[0.78rem] leading-5 text-bp-blueGum/72 md:text-[0.82rem]">

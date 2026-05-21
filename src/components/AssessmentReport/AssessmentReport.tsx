@@ -297,9 +297,15 @@ export const FreeBlockAssessmentReport = () => {
             </m.div>
 
             <section className="text-gray-400 text-center mt-8">
-              General information only, not professional advice. Covers
-              freestanding houses in RZ1 and RZ2 zones. Results based on block
-              size and zone - site conditions assessed separately.
+              General information only, not professional advice. Results are
+              based on block size and zone - site conditions are assessed
+              separately.{" "}
+              <a
+                href="/disclaimer"
+                className="font-medium underline underline-offset-3"
+              >
+                Read our full disclaimer.
+              </a>
             </section>
           </div>
 

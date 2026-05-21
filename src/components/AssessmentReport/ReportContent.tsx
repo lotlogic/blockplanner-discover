@@ -1,12 +1,8 @@
 import type { GeoApi } from "@/@types/api";
 import { toTitleCase } from "@/utils/text";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 import { buildFreeReportCards } from "./free-report";
-
-const LVC_FORM_URL =
-  "https://forms.monday.com/forms/316e54ed01893dd1b82597c400914642?r=apse2";
-
-const LVC_WAIVER_URL =
-  "https://www.revenue.act.gov.au/rates-and-property-charges/lease-variation-charge-lvc/rz1-lease-variation-charge-lvc-partial-waiver";
 
 type Props = {
   savedAddress: string;
@@ -57,6 +53,10 @@ const renderReportText = (text: string) => {
 };
 
 export const ReportContent = ({ report, savedAddress }: Props) => {
+  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>(
+    {},
+  );
+
   const zoneText = [
     report?.zone.zoneCode,
     toTitleCase(report?.zone.properties?.LAND_USE_POLICY_DESC),
@@ -79,6 +79,13 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
     month: "long",
     year: "numeric",
   }).format(new Date());
+
+  const toggleCard = (cardKey: string) => {
+    setExpandedCards((current) => ({
+      ...current,
+      [cardKey]: !current[cardKey],
+    }));
+  };
 
   return (
     <div className="text-bp-blueGum">
@@ -143,72 +150,25 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
           <p className="text-xs font-semibold uppercase text-bp-eucalypt">
             Before you read your results
           </p>
-          <div className="mt-4 space-y-5 text-sm leading-6 text-bp-blueGum/76">
-            <section>
-              <h4 className="font-semibold text-bp-blueGum/90">
-                Your Crown lease
-              </h4>
-              <p className="mt-2">
-                In the ACT, residential land is held under a Crown lease, not
-                freehold title. Your lease has a purpose clause that says what
-                can be built on the block. Many leases in Canberra are limited
-                to a single dwelling. If yours is, that restriction applies
-                regardless of what the planning rules permit - a lease variation
-                through a development application is required before a second
-                dwelling can be built or sold separately, and a Lease Variation
-                Charge (LVC) applies. Depending on your suburb, this can range
-                from around $46,000 to well over $300,000.
-              </p>
-            </section>
-
-            <section>
-              <h4 className="font-semibold text-bp-blueGum/90">
-                Lease Variation Charge
-              </h4>
-              <p className="mt-2">
-                If you are in RZ1 and considering dual occupancy, check whether
-                you qualify for the{" "}
-                <a
-                  href={LVC_WAIVER_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-semibold underline underline-offset-3"
-                >
-                  ACT Government's RZ1 LVC Partial Waiver
-                </a>
-                .
-              </p>
-              <p className="mt-3">
-                BlockPlanner is actively engaging with the ACT Government to
-                push for fairer LVC treatment for resident-led projects. If the
-                LVC would affect the feasibility of your project, we would like
-                to hear from you.{" "}
-                <a
-                  href={LVC_FORM_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-semibold underline underline-offset-3"
-                >
-                  Share your experience with the LVC - takes 2 minutes
-                </a>
-                .
-              </p>
-            </section>
-
-            <section>
-              <h4 className="font-semibold text-bp-blueGum/90">
-                Your easements
-              </h4>
-              <p className="mt-2">
-                Your title may also have easements - legal rights held by third
-                parties over part of your land. You cannot build over an
-                easement, and depending where one sits it can significantly
-                affect what is practical in the rear yard. The easement data in
-                this report comes from ACTmapi deposited plans and is indicative
-                only - not all easements registered on title will appear here. A
-                title search confirms what actually applies.
-              </p>
-            </section>
+          <div className="mt-4 space-y-4 text-sm leading-6 text-bp-blueGum/76">
+            <p>
+              These results give you a clear starting point - what the planning
+              framework says is possible on a block like yours, based on your
+              zone and size. For most homeowners, what you&apos;ll see below
+              reflects what&apos;s genuinely available to you.
+            </p>
+            <p>
+              One thing worth checking alongside your results: your Crown lease.
+              All Canberra homes are held under a Crown lease rather than
+              freehold title, and some leases limit what can be built regardless
+              of what the planning framework permits. If you&apos;re not sure,
+              it&apos;s easy to check - your lease purpose clause is available
+              through Access Canberra or your title documents.
+            </p>
+            <p>
+              For anything beyond what&apos;s covered here, see the bottom of
+              this page - and your options on the right.
+            </p>
           </div>
         </div>
 
@@ -220,6 +180,8 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
 
         <div className="mt-6 space-y-4">
           {cards.map((card) => {
+            const isExpanded = Boolean(expandedCards[card.key]);
+            const bodyId = `report-card-${card.key}-body`;
             const statusStyles =
               card.status === "possible"
                 ? "border-emerald-200 bg-emerald-50 text-emerald-800"
@@ -236,23 +198,56 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
             return (
               <article
                 key={card.key}
-                className="grid gap-4 rounded-sm border border-bp-blueGum/10 bg-white p-5 shadow-[0_10px_28px_rgba(73,79,74,0.06)] md:grid-cols-[1fr_auto] md:items-start md:p-6"
+                className="rounded-sm border border-bp-blueGum/10 bg-white p-5 shadow-[0_10px_28px_rgba(73,79,74,0.06)] md:p-6"
               >
-                <div>
-                  <h4 className="text-xl font-semibold text-bp-blueGum">
-                    {card.title}
-                  </h4>
-                  <p className="mt-1 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-bp-blueGum/55">
-                    {card.technical}
-                  </p>
-                  <div className="mt-4">{renderReportText(card.body)}</div>
+                <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-start">
+                  <button
+                    type="button"
+                    className="group block w-full rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bp-eucalypt"
+                    aria-expanded={isExpanded}
+                    aria-controls={bodyId}
+                    onClick={() => toggleCard(card.key)}
+                  >
+                    <h4 className="text-xl font-semibold text-bp-blueGum transition-colors group-hover:text-bp-eucalypt">
+                      {card.title}
+                    </h4>
+                    <p className="mt-1 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-bp-blueGum/55">
+                      {card.technical}
+                    </p>
+                  </button>
+
+                  <div className="flex flex-col items-start gap-2 md:items-end">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusStyles}`}
+                    >
+                      {statusLabel}
+                    </span>
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1 rounded-sm text-xs font-semibold uppercase tracking-[0.12em] text-bp-eucalypt transition-colors hover:text-bp-blueGum focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-bp-eucalypt"
+                      aria-expanded={isExpanded}
+                      aria-controls={bodyId}
+                      onClick={() => toggleCard(card.key)}
+                    >
+                      {isExpanded ? "Show less" : "See more"}
+                      <ChevronDown
+                        className={`size-4 transition-transform ${
+                          isExpanded ? "rotate-180" : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </div>
                 </div>
 
-                <span
-                  className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusStyles}`}
-                >
-                  {statusLabel}
-                </span>
+                {isExpanded && (
+                  <div
+                    id={bodyId}
+                    className="mt-5 border-t border-bp-blueGum/10 pt-5"
+                  >
+                    {renderReportText(card.body)}
+                  </div>
+                )}
               </article>
             );
           })}
@@ -267,59 +262,55 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
 
         <div className="mt-8 rounded-sm border border-bp-blueGum/10 bg-white px-5 py-5 md:px-6">
           <h4 className="text-lg font-semibold text-bp-blueGum">
-            There is more to the picture.
+            There is more to the picture
           </h4>
           <div className="mt-4 space-y-4 text-sm leading-7 text-bp-blueGum/76">
             <p>
-              The options above are based on your block size and zone. They tell
-              you what the planning rules permit in principle. What actually
-              works on your specific block depends on what is already there.
+              These results are based on your block&apos;s zone and size.
+              What&apos;s actually possible depends on what&apos;s already
+              there. Here&apos;s what we look at more closely in the paid
+              report.
             </p>
             <p>
-              <strong>Trees.</strong> Significant trees are protected under the
-              Urban Forest Act 2023. A protected tree has a Tree Protection Zone
-              - an area around the trunk and canopy where you cannot build or
-              excavate without approval. Depending where trees sit, they can
-              reduce usable space or rule out certain configurations entirely.
-              This assessment flags significant trees based on canopy size from
-              aerial imagery. We also separately check the ACTmapi Registered
-              Trees layer - individually listed trees with a higher level of
-              protection.
+              <strong>Trees.</strong> Registered and regulated trees on your
+              block can affect where a second dwelling can go and how much
+              usable space you have.
             </p>
             <p>
-              <strong>Easements.</strong> Depending on where an easement sits on
-              your block, it can significantly affect where a second dwelling
-              can go. The paid report maps what's visible from ACTmapi for your
-              specific block.
+              <strong>Easements.</strong> An easement is a right that allows
+              someone else to use part of your land for a specific purpose -
+              common examples are stormwater drains, gas lines, or shared
+              driveways. Depending on where an easement sits on your block, it
+              can limit where a second dwelling can go. Your title may also have
+              easements that don&apos;t show up in standard mapping.
             </p>
             <p>
-              <strong>Heritage.</strong> If the property is within a heritage
-              overlay, development proposals need to respond to heritage
-              requirements. Our assessment uses the ACTmapi heritage layer. If
-              heritage applies, free preliminary advice may be available through
-              the ACT Government's heritage architecture service.
-            </p>
-            <p>
-              <strong>Sewer.</strong> Where the sewer connection sits affects
+              <strong>Sewer.</strong> Where your sewer connection sits affects
               where a second dwelling can be serviced and what it costs.
             </p>
             <p>
-              <strong>District policies.</strong> Additional planning
-              requirements may apply on top of zone rules depending on your
-              suburb - particularly in the Inner North and City districts.
+              <strong>Heritage.</strong> If your property is within a heritage
+              overlay, development proposals need to respond to heritage
+              requirements. The paid report includes a referral to a trusted
+              heritage architect for a preliminary assessment.
             </p>
             <p>
-              <strong>Subdivision and Leasing Policy.</strong> For blocks where
-              subdivision is being considered, NI2023-540 F01 (Subdivision
-              Policy) and F02 (Leasing Policy) apply in addition to the zone
-              rules. A registered town planner can advise on what this means for
-              a specific proposal.
+              <strong>Additional planning controls.</strong> Depending on your
+              suburb and what you&apos;re planning, district policies and
+              subdivision requirements may also apply. We can advise on these
+              separately - get in touch if this is relevant to your project.
             </p>
             <p>
-              This report is a preliminary read. It is not a professional
-              feasibility assessment and does not replace advice from a
-              registered town planner. The paid BlockPlanner report covers all
-              of the above in detail for your specific block.
+              <strong>Lease Variation Charge.</strong> If you&apos;re
+              considering adding dwellings to your block, an LVC may apply when
+              you seek to separately title additional dwellings. This applies
+              across all residential zones and the amount varies by suburb, zone
+              and number of dwellings. The paid report provides further context
+              and links to relevant resources.
+            </p>
+            <p>
+              <strong>Ready to go further?</strong> See the options on the
+              right.
             </p>
           </div>
         </div>
@@ -329,9 +320,14 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
             Disclaimer
           </p>
           <p className="mt-3 text-sm leading-7 text-bp-blueGum/72">
-            General information only, not professional advice. Covers
-            freestanding houses in RZ1 and RZ2 zones. Results based on block
-            size and zone - site conditions assessed separately.
+            General information only, not professional advice. Results are based
+            on block size and zone - site conditions are assessed separately.{" "}
+            <a
+              href="/disclaimer"
+              className="font-semibold underline underline-offset-3"
+            >
+              Read our full disclaimer.
+            </a>
           </p>
         </div>
       </div>
