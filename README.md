@@ -6,6 +6,10 @@ This repo is the **Blockplanner “free block assessment”** frontend. The user
 2. View a free summary assessment (fetched from the LotLogic API)
 3. Optionally purchase the full PDF report via Stripe Checkout
 
+Production URL: `https://discover.blockplanner.com.au/`
+
+Shared backend: `https://lotcheck-be.wittysky-d6d60dbd.australiasoutheast.azurecontainerapps.io`
+
 ## Tech stack
 
 - React 19 + Vite + TypeScript
@@ -57,6 +61,8 @@ The frontend expects a backend at `VITE_API_URL` that exposes:
 - `POST /api/stripe/create-checkout-session`
   - Request body includes (where available): `site`, `intention`, `email` (alias), `clientEmail`, `address`, `suburb`, `blockSizeM2`, `zone`
   - Response body: `{ "url": string }` where `url` is the Stripe-hosted Checkout URL
+
+Paid-report operations after a successful Stripe webhook are handled by the shared backend through monday.com.
 
 ## Analytics (Mixpanel)
 
