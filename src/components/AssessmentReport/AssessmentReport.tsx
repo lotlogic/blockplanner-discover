@@ -6,6 +6,7 @@ import {
   trackEvent,
   trackLookupPerformed,
 } from "@/utils/analytics";
+import { recordFreeAssessmentLead } from "@/utils/freeAssessmentLead";
 import { classList } from "@/utils/tailwind";
 import { useLocalStorage, useSessionStorage } from "@uidotdev/usehooks";
 import { motion as m } from "framer-motion";
@@ -171,6 +172,16 @@ export const FreeBlockAssessmentReport = () => {
         address: addressKey,
         email: formData.email,
         timestamp: new Date().toISOString(),
+      });
+
+      void recordFreeAssessmentLead(formData.email).catch((error: any) => {
+        const message = error?.message || String(error);
+        trackEvent("free_assessment_lead_capture_error", {
+          email: formData.email,
+          message,
+          timestamp: new Date().toISOString(),
+        });
+        console.log("Error: " + message);
       });
 
       // save the search to localstorage
