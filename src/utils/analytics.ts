@@ -1,9 +1,7 @@
 import type { GeoApi, LotCheckPathwayCard, LotRule } from "@/@types/api";
 import mixpanel from "mixpanel-browser";
 
-const DEFAULT_MIXPANEL_TOKEN = "96b3f842f9f82bc71b1419a1c8b3d873";
-const MIXPANEL_TOKEN =
-  import.meta.env.VITE_MIXPANEL_TOKEN || DEFAULT_MIXPANEL_TOKEN;
+const MIXPANEL_TOKEN = String(import.meta.env.VITE_MIXPANEL_TOKEN || "").trim();
 const MIXPANEL_ENABLED = Boolean(MIXPANEL_TOKEN);
 
 let isInitialized = false;
@@ -12,8 +10,8 @@ export const initAnalytics = () => {
   if (!MIXPANEL_ENABLED || isInitialized) return;
 
   mixpanel.init(MIXPANEL_TOKEN, {
-    autocapture: true,
-    record_sessions_percent: 100,
+    autocapture: false,
+    record_sessions_percent: 0,
     api_host: "https://api-eu.mixpanel.com",
   });
 
@@ -41,19 +39,6 @@ export const identifyUser = (
 ) => {
   if (!MIXPANEL_ENABLED || !email) return;
   if (!isInitialized) initAnalytics();
-
-  const aliasKey = `mixpanel_alias_${email}`;
-  if (typeof window !== "undefined") {
-    const hasAlias = window.localStorage.getItem(aliasKey);
-    if (!hasAlias) {
-      try {
-        mixpanel.alias(email);
-        window.localStorage.setItem(aliasKey, "1");
-      } catch {
-        // ignore alias errors for repeat calls or blocked storage
-      }
-    }
-  }
 
   mixpanel.identify(email);
   if (mixpanel.people && typeof mixpanel.people.set === "function") {

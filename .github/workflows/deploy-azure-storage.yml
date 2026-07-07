@@ -34,6 +34,7 @@ jobs:
         run: |
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
           echo "VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}" >> .env
+          echo "VITE_MIXPANEL_TOKEN=${{ secrets.VITE_MIXPANEL_TOKEN }}" >> .env
           echo "VITE_COMMENCEMENT_DATE=2026-01-01" >> .env
 
       - name: Build

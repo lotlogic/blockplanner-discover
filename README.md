@@ -32,6 +32,7 @@ Copy `.env.example` to `.env` (or create a `.env` file) in the repo root:
 ```env
 VITE_API_URL="https://your-api.example.com"
 VITE_GOOGLE_MAPS_API_KEY="your_google_maps_api_key"
+VITE_MIXPANEL_TOKEN=""
 ```
 
 Then open `http://localhost:5173`.
@@ -66,7 +67,7 @@ Paid-report operations after a successful Stripe webhook are handled by the shar
 
 ## Analytics (Mixpanel)
 
-The app uses Mixpanel (EU project host) with autocapture enabled. Add the project token to `VITE_MIXPANEL_TOKEN` (optional: a default token is embedded for convenience).
+The app uses Mixpanel (EU project host). Add the project token to `VITE_MIXPANEL_TOKEN`; there is no embedded fallback token. Autocapture and session replay are disabled, so only explicit product events are tracked.
 
 Tracked events (key ones):
 
@@ -88,6 +89,7 @@ Required GitHub secrets:
 
 - `VITE_API_URL`
 - `VITE_GOOGLE_MAPS_API_KEY`
+- `VITE_MIXPANEL_TOKEN`
 - `VITE_COMMENCEMENT_DATE` (optional)
 - `AZURE_CREDENTIALS` (service principal JSON for `azure/login`)
 - `AZURE_STORAGE_ACCOUNT`
