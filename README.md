@@ -1,9 +1,9 @@
-# Blockplanner Free Assessment (React + Vite)
+# BlockPlanner Discover (React + Vite)
 
-This repo is the **Blockplanner “free block assessment”** frontend. The user flow is:
+This repo is the **BlockPlanner Discover** frontend. The user flow is:
 
 1. Search/select an ACT address (Google Places Autocomplete)
-2. View a free summary assessment (fetched from the LotLogic API)
+2. View a free summary assessment (fetched from the shared backend API)
 3. Optionally purchase the full PDF report via Stripe Checkout
 
 Production URL: `https://discover.blockplanner.com.au/`
@@ -76,7 +76,7 @@ Tracked events (key ones):
 
 Analytics review path:
 
-- Mixpanel → Dashboards → create/view **“LotLogic Free Assessment”** (use `lookup_performed` and `cta_click` as primary cards)
+- Mixpanel → Dashboards → create/view **“BlockPlanner Discover”** (use `lookup_performed` and `cta_click` as primary cards)
 - For exports: Mixpanel → Events → select `lookup_performed` → Export → CSV
 
 ## Deployment (Azure Storage Static Website)
