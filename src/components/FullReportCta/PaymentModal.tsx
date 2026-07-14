@@ -91,6 +91,8 @@ export const PaymentModal = (props: Props) => {
           },
           body: JSON.stringify({
             site: location.origin,
+            productCode: "site_report",
+            sourceApp: "discover",
 
             intention: formData.intention,
 
@@ -150,8 +152,8 @@ export const PaymentModal = (props: Props) => {
 
       <p className="text-center text-lg">
         Upgrade to the full PDF report for a clearer picture of what's worth
-        pursuing. We look at your existing house, trees, easements, setbacks
-        and access, then send practical next steps straight to your inbox.
+        pursuing. We look at your existing house, trees, easements, setbacks and
+        access, then send practical next steps straight to your inbox.
       </p>
 
       <form

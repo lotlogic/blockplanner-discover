@@ -12,6 +12,7 @@ export const CheckoutPage = () => {
 
   const [searchParams] = useSearchParams();
   const [savedAddress] = useSessionStorage("address", "");
+  const productCode = searchParams.get("product") || "site_report";
 
   useEffect(() => {
     const success = !!searchParams.get("success");
@@ -27,10 +28,11 @@ export const CheckoutPage = () => {
 
     trackEvent("checkout_status_view", {
       status,
+      product_type: productCode,
       address: savedAddress || undefined,
       timestamp: new Date().toISOString(),
     });
-  }, [status, savedAddress]);
+  }, [status, savedAddress, productCode]);
 
   if (!status) return null;
 
