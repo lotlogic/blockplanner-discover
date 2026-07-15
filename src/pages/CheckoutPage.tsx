@@ -7,12 +7,34 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
+const PRODUCT_SUCCESS_COPY: Record<
+  string,
+  { heading: string; summary: string; detail: string }
+> = {
+  site_report: {
+    heading: "Site report order confirmed",
+    summary:
+      "Thank you for your purchase. The BlockPlanner team is getting started on your full site report.",
+    detail:
+      "Your comprehensive PDF report will be delivered directly to your inbox within 48 hours.",
+  },
+  crown_lease: {
+    heading: "Crown lease order confirmed",
+    summary:
+      "Thank you for your purchase. The BlockPlanner team will retrieve and review your Crown lease.",
+    detail:
+      "Your Crown lease and plain-English summary will be delivered directly to your inbox.",
+  },
+};
+
 export const CheckoutPage = () => {
   const [status, setStatus] = useState<"success" | "cancel" | "error">();
 
   const [searchParams] = useSearchParams();
   const [savedAddress] = useSessionStorage("address", "");
   const productCode = searchParams.get("product") || "site_report";
+  const successCopy =
+    PRODUCT_SUCCESS_COPY[productCode] || PRODUCT_SUCCESS_COPY.site_report;
 
   useEffect(() => {
     const success = !!searchParams.get("success");
@@ -50,17 +72,12 @@ export const CheckoutPage = () => {
             {status === "success" && (
               <div className="mt-15 mb-10 space-y-4">
                 <Heading tag="h2" size="h3">
-                  Order confirmed!
+                  {successCopy.heading}
                 </Heading>
                 <Heading tag="p" size="h4">
-                  Thank you for your purchase. We have received your order and
-                  our team is getting started on your custom assessment.
+                  {successCopy.summary}
                 </Heading>
-                <p className="text-lg text-gray-600">
-                  You will receive an email confirmation shortly, and your
-                  comprehensive PDF report will be delivered directly to your
-                  inbox within <strong>48 hours</strong>.
-                </p>
+                <p className="text-lg text-gray-600">{successCopy.detail}</p>
               </div>
             )}
 

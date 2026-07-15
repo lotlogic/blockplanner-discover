@@ -22,6 +22,7 @@ export default defineConfig({
     },
   },
   build: {
+    reportCompressedSize: false,
     // Temporarily disable manual chunk splitting to fix module initialization issues
     // rollupOptions: {
     //   output: {

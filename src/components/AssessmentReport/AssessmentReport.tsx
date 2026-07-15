@@ -18,6 +18,9 @@ import GatedContentForm, {
   type GatedContentFormValues,
 } from "./GatedContentForm";
 import LoadingMessage from "./LoadingMessage";
+import CrownLeaseCheckoutModal from "./CrownLeaseCheckoutModal";
+import MediumDensityContactModal from "./MediumDensityContactModal";
+import MediumDensityReportContent from "./MediumDensityReportContent";
 import OffZoneForm, { type OffZoneFormValues } from "./OffZoneForm";
 import ReportContent from "./ReportContent";
 
@@ -32,6 +35,8 @@ export const FreeBlockAssessmentReport = () => {
   const [isGated, setIsGated] = useState(false);
   const [error, setError] = useState<string>();
   const [email, setEmail] = useState<string>();
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [leaseModalOpen, setLeaseModalOpen] = useState(false);
 
   const hasTrackedLookup = useRef(false);
 
@@ -129,15 +134,26 @@ export const FreeBlockAssessmentReport = () => {
     const currentSave = newSaves[report.formattedAddress];
     if (currentSave) setEmail(currentSave.email);
 
-    // check property zoning
-    if (!["RZ1", "RZ2"].includes(report.zone.zoneCode || "")) {
-      setIsOffZone(true);
-      setShowOffZone(!currentSave);
-    }
+    const zoneCode = (
+      report.zone.zoneCode ||
+      report.lotCheckRules.zoneCode ||
+      ""
+    ).toUpperCase();
+    const isStandardReportZone = ["RZ1", "RZ2"].includes(zoneCode);
+    const isMediumDensityZone = ["RZ3", "RZ4"].includes(zoneCode);
+    const isOtherZone = !isStandardReportZone && !isMediumDensityZone;
 
-    // check gated content
-    setIsGated(!currentSave);
+    setIsOffZone(isOtherZone);
+    setShowOffZone(isOtherZone && !currentSave);
+    setIsGated(isStandardReportZone && !currentSave);
   }, [report]);
+
+  const zoneCode = (
+    report?.zone.zoneCode ||
+    report?.lotCheckRules.zoneCode ||
+    ""
+  ).toUpperCase();
+  const isMediumDensityZone = ["RZ3", "RZ4"].includes(zoneCode);
 
   /****************************************************
     checkout data for payload
@@ -146,8 +162,27 @@ export const FreeBlockAssessmentReport = () => {
     email,
     address: report?.formattedAddress || savedAddress,
     suburb: report?.block?.properties?.DIVISION_NAME || undefined,
-    zone: report?.lotCheckRules?.zoneCode || report?.zone?.zoneCode || "",
+    zone: zoneCode,
     blockSizeM2: report?.lotCheckRules?.blockAreaSqm,
+  };
+
+  const openContactModal = () => {
+    trackCtaClick("request_medium_density_call", {
+      address: checkoutData.address,
+      zone: zoneCode,
+      block_size: checkoutData.blockSizeM2,
+    });
+    setContactModalOpen(true);
+  };
+
+  const openLeaseModal = () => {
+    trackCtaClick("purchase_crown_lease", {
+      address: checkoutData.address,
+      zone: zoneCode,
+      block_size: checkoutData.blockSizeM2,
+      location: "medium_density_result",
+    });
+    setLeaseModalOpen(true);
   };
 
   /****************************************************
@@ -269,6 +304,24 @@ export const FreeBlockAssessmentReport = () => {
         onSubmit={handleOffZone}
       />
 
+      <MediumDensityContactModal
+        isOpen={contactModalOpen}
+        setIsOpen={setContactModalOpen}
+        address={checkoutData.address}
+        zone={zoneCode}
+        email={email}
+      />
+
+      <CrownLeaseCheckoutModal
+        isOpen={leaseModalOpen}
+        setIsOpen={setLeaseModalOpen}
+        email={email}
+        address={checkoutData.address}
+        suburb={checkoutData.suburb}
+        zone={zoneCode}
+        blockSizeM2={checkoutData.blockSizeM2}
+      />
+
       {!isOffZone && isGated && (
         <GatedContentForm onSubmit={handleGatedContent} />
       )}
@@ -276,7 +329,13 @@ export const FreeBlockAssessmentReport = () => {
       <section
         className={classList([
           "mt-12 container mx-auto px-4 pb-60 lg:pb-12",
-          { "blur-xs": showOffZone || isGated },
+          {
+            "blur-xs":
+              showOffZone ||
+              isGated ||
+              contactModalOpen ||
+              leaseModalOpen,
+          },
         ])}
       >
         <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
@@ -301,6 +360,13 @@ export const FreeBlockAssessmentReport = () => {
                   <LoadingMessage />
                 ) : error ? (
                   <ErrorMessage error={error} />
+                ) : isMediumDensityZone ? (
+                  <MediumDensityReportContent
+                    report={report}
+                    savedAddress={savedAddress}
+                    onRequestCall={openContactModal}
+                    onGetLease={openLeaseModal}
+                  />
                 ) : (
                   <ReportContent report={report} savedAddress={savedAddress} />
                 )}
@@ -320,23 +386,27 @@ export const FreeBlockAssessmentReport = () => {
             </section>
           </div>
 
-          <FullReportCta
-            data={{
-              ...checkoutData,
-            }}
-            isDisabled={isLoading || isGated || isOffZone || !!error}
-            location="desktop"
-          />
+          {!isMediumDensityZone && (
+            <FullReportCta
+              data={{
+                ...checkoutData,
+              }}
+              isDisabled={isLoading || isGated || isOffZone || !!error}
+              location="desktop"
+            />
+          )}
         </div>
       </section>
 
-      <FullReportCta
-        data={{
-          ...checkoutData,
-        }}
-        isDisabled={isLoading || isGated || isOffZone || !!error}
-        location="mobile"
-      />
+      {!isMediumDensityZone && (
+        <FullReportCta
+          data={{
+            ...checkoutData,
+          }}
+          isDisabled={isLoading || isGated || isOffZone || !!error}
+          location="mobile"
+        />
+      )}
     </>
   );
 };
