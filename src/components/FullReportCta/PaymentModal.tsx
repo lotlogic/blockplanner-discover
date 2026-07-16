@@ -43,6 +43,13 @@ export type CheckoutData = {
   blockSizeM2?: string | number;
 };
 
+const checkoutMode =
+  String(import.meta.env.VITE_STRIPE_CHECKOUT_MODE || "live")
+    .trim()
+    .toLowerCase() === "sandbox"
+    ? "sandbox"
+    : "live";
+
 type Props = CheckoutData & {
   isOpen: boolean;
   setIsOpen: (x: boolean) => void;
@@ -91,6 +98,8 @@ export const PaymentModal = (props: Props) => {
           },
           body: JSON.stringify({
             site: location.origin,
+            cancelUrl: window.location.href,
+            checkoutMode,
             productCode: "site_report",
             sourceApp: "discover",
 
