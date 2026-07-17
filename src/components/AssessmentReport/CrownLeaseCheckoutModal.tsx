@@ -2,9 +2,10 @@ import Button from "@/components/ui/Button";
 import Heading from "@/components/ui/Heading";
 import TextModal from "@/components/ui/TextModal";
 import { identifyUser, trackCtaClick, trackEvent } from "@/utils/analytics";
+import { writeSessionStorageString } from "@/utils/sessionStorage";
 import { classList } from "@/utils/tailwind";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Mail, User } from "lucide-react";
+import { Check, ChevronDown, Mail, Target, User } from "lucide-react";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
@@ -14,6 +15,17 @@ const crownLeaseFormSchema = z.object({
   email: z
     .email({ pattern: z.regexes.rfc5322Email, message: "Invalid email format" })
     .trim(),
+  intention: z.enum(
+    [
+      "Sell",
+      "Develop myself",
+      "Have someone develop for me",
+      "Open to options",
+    ],
+    {
+      message: "Please select your primary intention",
+    },
+  ),
 });
 
 type CrownLeaseFormValues = z.infer<typeof crownLeaseFormSchema>;
@@ -47,7 +59,7 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
     formState: { errors, isSubmitting },
   } = useForm<CrownLeaseFormValues>({
     resolver: zodResolver(crownLeaseFormSchema),
-    defaultValues: { email: props.email || "" },
+    defaultValues: { email: props.email || "", intention: undefined },
   });
 
   const onSubmit: SubmitHandler<CrownLeaseFormValues> = async (formData) => {
@@ -58,11 +70,12 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
         throw new Error("Please select a property address first.");
       }
 
-      sessionStorage.setItem("address", props.address);
+      writeSessionStorageString("address", props.address);
       trackCtaClick("purchase_crown_lease_submit", {
         address: props.address,
         zone: props.zone,
         block_size: props.blockSizeM2,
+        intention: formData.intention,
         location: "medium_density_result",
       });
 
@@ -77,6 +90,7 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
             checkoutMode,
             productCode: "crown_lease",
             sourceApp: "discover",
+            intention: formData.intention,
             email: formData.email,
             clientName: formData.clientName,
             clientEmail: formData.email,
@@ -106,11 +120,13 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
         name: formData.clientName,
         address: props.address,
         product_type: "crown_lease",
+        intention: formData.intention,
       });
       trackEvent("checkout_redirect", {
         product_type: "crown_lease",
         address: props.address,
         zone: props.zone,
+        intention: formData.intention,
         source: "discover",
         timestamp: new Date().toISOString(),
       });
@@ -139,8 +155,8 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
         Crown lease check - $149
       </Heading>
       <p className="mx-auto mt-3 max-w-150 text-center text-base leading-7 text-bp-blueGum/72">
-        We&apos;ll retrieve and read your Crown lease so you know what its purpose
-        clause means for your block.
+        We&apos;ll retrieve and read your Crown lease so you know exactly which
+        LVC scenario applies.
       </p>
 
       <div className="mx-auto mt-7 grid max-w-150 gap-5 md:grid-cols-[1fr_0.72fr]">
@@ -159,7 +175,11 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
             </li>
             <li className="flex gap-3">
               <Check className="mt-1 size-4 shrink-0 text-bp-eucalypt" />
-              <span>Delivered to your email</span>
+              <span>Which LVC schedule applies, Schedule 1 or Schedule 2</span>
+            </li>
+            <li className="flex gap-3">
+              <Check className="mt-1 size-4 shrink-0 text-bp-eucalypt" />
+              <span>Emailed to you within 24 hours</span>
             </li>
           </ul>
         </div>
@@ -233,6 +253,46 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
               </p>
             )}
           </div>
+        </div>
+
+        <div>
+          <label>
+            <span className="sr-only">Primary intention</span>
+            <span className="relative block">
+              <Target className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-gray-300" />
+              <ChevronDown className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-gray-500" />
+              <select
+                defaultValue=""
+                {...register("intention")}
+                aria-invalid={errors.intention ? "true" : "false"}
+                className={classList(
+                  "w-full appearance-none rounded-md border border-gray-300 bg-white py-3 pr-10 pl-11 text-gray-700",
+                  "focus-visible:border-transparent",
+                )}
+              >
+                <option value="" disabled>
+                  What&apos;s your primary intention?
+                </option>
+                <option value="Sell">
+                  I want to sell and understand what it&apos;s worth
+                </option>
+                <option value="Develop myself">
+                  I want to develop it myself
+                </option>
+                <option value="Have someone develop for me">
+                  I want someone to develop it for me
+                </option>
+                <option value="Open to options">
+                  I&apos;m open to options - help me figure it out
+                </option>
+              </select>
+            </span>
+          </label>
+          {errors.intention && (
+            <p className="mt-1 pl-1 text-xs text-error" role="alert">
+              {errors.intention.message}
+            </p>
+          )}
         </div>
 
         {submitError && (

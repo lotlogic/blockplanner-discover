@@ -201,7 +201,7 @@ export const PaymentModal = (props: Props) => {
                   I want someone to develop it for me
                 </option>
                 <option value="Open to options">
-                  I'm open to options &mdash; help me figure it out
+                  I'm open to options - help me figure it out
                 </option>
               </select>
             </span>

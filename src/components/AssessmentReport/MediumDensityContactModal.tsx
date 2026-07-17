@@ -308,7 +308,7 @@ export const MediumDensityContactModal = (props: Props) => {
                     I want someone to develop it for me
                   </option>
                   <option value="Open to options">
-                    I&apos;m open to options, help me figure it out
+                    I&apos;m open to options - help me figure it out
                   </option>
                 </select>
               </span>

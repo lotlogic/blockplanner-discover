@@ -195,12 +195,18 @@ export const ContactModal = (props: Props) => {
                 <option value="" disabled>
                   What are you hoping to do?
                 </option>
-                <option value="Sell">Sell</option>
-                <option value="Develop myself">Develop myself</option>
-                <option value="Have someone develop for me">
-                  Have someone develop for me
+                <option value="Sell">
+                  I want to sell and understand what it&apos;s worth
                 </option>
-                <option value="Open to options">Open to options</option>
+                <option value="Develop myself">
+                  I want to develop it myself
+                </option>
+                <option value="Have someone develop for me">
+                  I want someone to develop it for me
+                </option>
+                <option value="Open to options">
+                  I&apos;m open to options - help me figure it out
+                </option>
               </select>
             </span>
           </label>

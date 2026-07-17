@@ -60,8 +60,8 @@ const OffZoneForm = (props: Props) => {
     <TextModal open={props.isOpen} onClose={closeModal}>
       <div className="text-center">
         <Heading tag="h2" size="h2">
-          Your property is in a different zone - but you can still get your
-          free assessment.
+          Your property is in a different zone - but you can still get your free
+          assessment.
         </Heading>
 
         <p className="pt-2 text-balance">
@@ -132,12 +132,18 @@ const OffZoneForm = (props: Props) => {
                   <option value="" disabled>
                     What are you hoping to do?
                   </option>
-                  <option value="Sell">Sell</option>
-                  <option value="Develop myself">Develop myself</option>
-                  <option value="Have someone develop for me">
-                    Have someone develop for me
+                  <option value="Sell">
+                    I want to sell and understand what it&apos;s worth
                   </option>
-                  <option value="Open to options">Open to options</option>
+                  <option value="Develop myself">
+                    I want to develop it myself
+                  </option>
+                  <option value="Have someone develop for me">
+                    I want someone to develop it for me
+                  </option>
+                  <option value="Open to options">
+                    I&apos;m open to options - help me figure it out
+                  </option>
                 </select>
               </span>
             </label>
