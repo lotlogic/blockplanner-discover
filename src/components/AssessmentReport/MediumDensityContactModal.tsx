@@ -130,7 +130,7 @@ export const MediumDensityContactModal = (props: Props) => {
       email: formData.email,
       phone: formData.clientPhone,
       intent: formData.intent,
-      requestType: "RZ3/RZ4 request a call",
+      requestType: `${props.zone || "RZ3/RZ4"} request a call`,
       ownsBlock: formData.ownsBlock,
       jointDevelopment: formData.jointDevelopment,
       message: formData.message,
