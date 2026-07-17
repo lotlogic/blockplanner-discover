@@ -1,6 +1,7 @@
 import Button from "@/components//ui/Button";
 import Heading from "@/components//ui/Heading";
 import TextModal from "@/components//ui/TextModal";
+import { isValidPhoneNumber } from "@/utils/phone";
 import { classList } from "@/utils/tailwind";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, Mail, Phone, Target, User } from "lucide-react";
@@ -25,7 +26,10 @@ const offZoneFormSchema = z.object({
   clientPhone: z
     .string()
     .trim()
-    .regex(/^[0-9+().\-\s]{7,}$/i, "Please enter a valid phone number"),
+    .refine(isValidPhoneNumber, {
+      message:
+        "Enter a valid phone number, including country code if overseas",
+    }),
   intent: z.enum(intentOptions, {
     message: "Please select your intent",
   }),
