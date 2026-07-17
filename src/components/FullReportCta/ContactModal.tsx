@@ -82,7 +82,7 @@ export const ContactModal = (props: Props) => {
         timestamp: new Date().toISOString(),
       });
 
-      // send email
+      // Submit the contact request to the configured backend workflow.
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/enquiry/get-in-touch`,
         {
@@ -92,6 +92,7 @@ export const ContactModal = (props: Props) => {
           },
           body: JSON.stringify({
             ...userData,
+            requestType: "Free report contact enquiry",
             message: "Free report contact enquiry",
             company: formData.company,
           }),

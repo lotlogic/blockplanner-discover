@@ -36,7 +36,10 @@ const contactFormSchema = z.object({
   jointDevelopment: z.enum(jointDevelopmentOptions, {
     message: "Please select an option",
   }),
-  message: z.string().trim().max(2000, "Please keep this under 2,000 characters"),
+  message: z
+    .string()
+    .trim()
+    .max(2000, "Please keep this under 2,000 characters"),
   company: z.string().optional(),
 });
 
@@ -121,19 +124,16 @@ export const MediumDensityContactModal = (props: Props) => {
       return;
     }
 
-    const message = [
-      `${props.zone || "RZ3/RZ4"} request a call`,
-      `Do you own this block? ${formData.ownsBlock}`,
-      `Would you consider doing this jointly with a neighbour? ${formData.jointDevelopment}`,
-      `Anything else we should know? ${formData.message || "Not provided"}`,
-    ].join("\n");
     const userData = {
       address: props.address,
       name: formData.clientName,
       email: formData.email,
       phone: formData.clientPhone,
       intent: formData.intent,
-      message,
+      requestType: "RZ3/RZ4 request a call",
+      ownsBlock: formData.ownsBlock,
+      jointDevelopment: formData.jointDevelopment,
+      message: formData.message,
     };
 
     try {
@@ -183,8 +183,8 @@ export const MediumDensityContactModal = (props: Props) => {
         Request a call
       </Heading>
       <p className="mx-auto mt-3 max-w-150 text-center text-base leading-7 text-bp-blueGum/72">
-        Leave your details and we&apos;ll call you within two business days. A few
-        quick questions will help us come prepared.
+        Leave your details and we&apos;ll call you within two business days. A
+        few quick questions will help us come prepared.
       </p>
       <p className="mt-3 text-center text-sm text-bp-blueGum/55">
         {props.address}
@@ -193,7 +193,9 @@ export const MediumDensityContactModal = (props: Props) => {
       {isSubmitted ? (
         <div className="mx-auto mt-7 max-w-130 rounded-sm border border-emerald-200 bg-emerald-50 px-5 py-5 text-center text-emerald-800">
           <p className="font-semibold">Thanks. Your details have been sent.</p>
-          <p className="mt-2 text-sm">We&apos;ll be in touch within two business days.</p>
+          <p className="mt-2 text-sm">
+            We&apos;ll be in touch within two business days.
+          </p>
         </div>
       ) : (
         <form
@@ -346,7 +348,10 @@ export const MediumDensityContactModal = (props: Props) => {
           </div>
 
           <div>
-            <label className="text-sm font-semibold text-bp-blueGum" htmlFor="medium-density-message">
+            <label
+              className="text-sm font-semibold text-bp-blueGum"
+              htmlFor="medium-density-message"
+            >
               Anything else you want us to know?
             </label>
             <textarea

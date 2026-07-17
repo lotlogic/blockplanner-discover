@@ -209,7 +209,12 @@ export const FreeBlockAssessmentReport = () => {
         timestamp: new Date().toISOString(),
       });
 
-      void recordFreeAssessmentLead(formData.email).catch((error: any) => {
+      void recordFreeAssessmentLead({
+        email: formData.email,
+        address: addressKey,
+        zone: zoneCode,
+        blockSizeM2: report?.lotCheckRules?.blockAreaSqm,
+      }).catch((error: any) => {
         const message = error?.message || String(error);
         trackEvent("free_assessment_lead_capture_error", {
           email: formData.email,
@@ -260,7 +265,7 @@ export const FreeBlockAssessmentReport = () => {
           timestamp: new Date().toISOString(),
         });
 
-        // send email
+        // Submit the contact request to the configured backend workflow.
         const response = await fetch(
           `${import.meta.env.VITE_API_URL}/api/enquiry/get-in-touch`,
           {
@@ -268,7 +273,12 @@ export const FreeBlockAssessmentReport = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ ...userData, company: formData.company }),
+            body: JSON.stringify({
+              ...userData,
+              requestType: "Off-zone enquiry",
+              message: "This is an off-zone enquiry",
+              company: formData.company,
+            }),
           },
         );
 
@@ -331,10 +341,7 @@ export const FreeBlockAssessmentReport = () => {
           "mt-12 container mx-auto px-4 pb-60 lg:pb-12",
           {
             "blur-xs":
-              showOffZone ||
-              isGated ||
-              contactModalOpen ||
-              leaseModalOpen,
+              showOffZone || isGated || contactModalOpen || leaseModalOpen,
           },
         ])}
       >

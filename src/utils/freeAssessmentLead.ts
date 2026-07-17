@@ -1,5 +1,14 @@
-export async function recordFreeAssessmentLead(email: string): Promise<void> {
-  const trimmedEmail = email.trim();
+type FreeAssessmentLead = {
+  email: string;
+  address?: string;
+  zone?: string;
+  blockSizeM2?: string | number;
+};
+
+export async function recordFreeAssessmentLead(
+  lead: FreeAssessmentLead,
+): Promise<void> {
+  const trimmedEmail = lead.email.trim();
   if (!trimmedEmail) return;
 
   const response = await fetch(
@@ -10,7 +19,12 @@ export async function recordFreeAssessmentLead(email: string): Promise<void> {
         "Content-Type": "application/json",
       },
       keepalive: true,
-      body: JSON.stringify({ email: trimmedEmail }),
+      body: JSON.stringify({
+        email: trimmedEmail,
+        address: lead.address,
+        zone: lead.zone,
+        blockSizeM2: lead.blockSizeM2,
+      }),
     },
   );
 
