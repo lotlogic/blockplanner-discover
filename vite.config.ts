@@ -5,7 +5,8 @@ import svgr from "vite-plugin-svgr";
 
 // https://vite.dev/config/
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base: command === "serve" ? "/tools/discover/" : "./",
   plugins: [
     react(),
     tailwindcss(),
@@ -69,4 +70,4 @@ export default defineConfig({
     // },
     chunkSizeWarningLimit: 2000, // Increase limit to accommodate Mapbox
   },
-});
+}));

@@ -140,7 +140,7 @@ export const HomePage = () => {
             </div>
             <div className="flex flex-wrap gap-x-4 gap-y-2 text-bp-sand/70">
               <a
-                href="https://discover.blockplanner.com.au/privacy"
+                href="https://blockplanner.com.au/tools/discover/privacy"
                 target="_blank"
                 rel="noreferrer"
                 className="hover:text-bp-sand"
@@ -148,7 +148,7 @@ export const HomePage = () => {
                 Privacy policy
               </a>
               <a
-                href="https://discover.blockplanner.com.au/disclaimer"
+                href="https://blockplanner.com.au/tools/discover/disclaimer"
                 target="_blank"
                 rel="noreferrer"
                 className="hover:text-bp-sand"

@@ -2,6 +2,7 @@ import Button from "@/components/ui/Button";
 import Heading from "@/components/ui/Heading";
 import TextModal from "@/components/ui/TextModal";
 import { identifyUser, trackCtaClick, trackEvent } from "@/utils/analytics";
+import { getCheckoutSiteUrl } from "@/utils/publicPath";
 import { writeSessionStorageString } from "@/utils/sessionStorage";
 import { classList } from "@/utils/tailwind";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -85,7 +86,7 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            site: location.origin,
+            site: getCheckoutSiteUrl(),
             cancelUrl: window.location.href,
             checkoutMode,
             productCode: "crown_lease",

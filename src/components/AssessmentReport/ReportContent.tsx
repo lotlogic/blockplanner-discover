@@ -2,6 +2,7 @@ import type { GeoApi } from "@/@types/api";
 import { toTitleCase } from "@/utils/text";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { buildFreeReportCards } from "./free-report";
 
 type Props = {
@@ -322,12 +323,12 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
           <p className="mt-3 text-sm leading-7 text-bp-blueGum/72">
             General information only, not professional advice. Results are based
             on block size and zone - site conditions are assessed separately.{" "}
-            <a
-              href="/disclaimer"
+            <Link
+              to="/disclaimer"
               className="font-semibold underline underline-offset-3"
             >
               Read our full disclaimer.
-            </a>
+            </Link>
           </p>
         </div>
       </div>

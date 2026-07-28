@@ -5,6 +5,7 @@ import { classList } from "@/utils/tailwind";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Mail } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { z } from "zod";
 
 const gatedContentFormSchema = z.object({
@@ -105,14 +106,14 @@ const GatedContentForm = (props: GatedContentProps) => {
               />
               <span className="text-sm text-left">
                 I agree to BlockPlanner's{" "}
-                <a
-                  href="/privacy"
+                <Link
+                  to="/privacy"
                   className="font-semibold"
                   target="_blank"
                   rel="noreferrer"
                 >
                   Privacy Policy
-                </a>
+                </Link>
               </span>
             </label>
             {errors.privacyAccepted && (

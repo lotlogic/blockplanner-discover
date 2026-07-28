@@ -11,7 +11,7 @@ import { classList } from "@/utils/tailwind";
 import { useLocalStorage, useSessionStorage } from "@uidotdev/usehooks";
 import { motion as m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { FullReportCta } from "../FullReportCta/FullReportCta";
 import ErrorMessage from "./ErrorMessage";
 import GatedContentForm, {
@@ -411,12 +411,12 @@ export const FreeBlockAssessmentReport = () => {
               General information only, not professional advice. Results are
               based on block size and zone - site conditions are assessed
               separately.{" "}
-              <a
-                href="/disclaimer"
+              <Link
+                to="/disclaimer"
                 className="font-medium underline underline-offset-3"
               >
                 Read our full disclaimer.
-              </a>
+              </Link>
             </section>
           </div>
 

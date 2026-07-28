@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Mail } from "lucide-react";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { z } from "zod";
 
 const subscribeFormSchema = z.object({
@@ -167,14 +168,14 @@ export const UpdatesSubscribeModal = (props: Props) => {
               <span className="text-left text-sm leading-6 text-bp-blueGum/72">
                 I agree to receive occasional BlockPlanner planning updates. I
                 can unsubscribe at any time. See the{" "}
-                <a
-                  href="/privacy"
+                <Link
+                  to="/privacy"
                   target="_blank"
                   rel="noreferrer"
                   className="font-semibold underline underline-offset-3"
                 >
                   Privacy Policy
-                </a>
+                </Link>
                 .
               </span>
             </label>

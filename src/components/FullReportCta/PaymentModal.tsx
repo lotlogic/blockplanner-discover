@@ -3,6 +3,7 @@ import Heading from "@/components//ui/Heading";
 import TextModal from "@/components//ui/TextModal";
 import { trackCtaClick, trackEvent } from "@/utils/analytics";
 import { isValidPhoneNumber } from "@/utils/phone";
+import { getCheckoutSiteUrl } from "@/utils/publicPath";
 import { classList } from "@/utils/tailwind";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, Mail, Phone, Target, User } from "lucide-react";
@@ -101,7 +102,7 @@ export const PaymentModal = (props: Props) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            site: location.origin,
+            site: getCheckoutSiteUrl(),
             cancelUrl: window.location.href,
             checkoutMode,
             productCode: "site_report",

@@ -4,7 +4,7 @@ import Heading from "@/components/ui/Heading";
 import { trackCtaClick, trackLookupStarted } from "@/utils/analytics";
 import { motion as m } from "framer-motion";
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type SelectedPlace = {
   address: string;
@@ -112,28 +112,28 @@ export const FreeBlockAssessment = () => {
           <p className="mx-auto mt-8 max-w-3xl text-[0.82rem] leading-6 text-bp-blueGum/72 md:text-[0.85rem]">
             General information only, not professional advice. Results are based
             on block size and zone - site conditions are assessed separately.{" "}
-            <a
-              href="/disclaimer"
+            <Link
+              to="/disclaimer"
               className="font-medium underline decoration-transparent underline-offset-3 transition-colors duration-200 hover:decoration-current"
             >
               Read our full disclaimer.
-            </a>
+            </Link>
           </p>
 
           <p className="mx-auto mt-4 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[0.78rem] leading-5 text-bp-blueGum/72 md:text-[0.82rem]">
-            <a
-              href="/privacy"
+            <Link
+              to="/privacy"
               className="font-medium underline decoration-transparent underline-offset-3 transition-colors duration-200 hover:decoration-current"
             >
               Privacy policy
-            </a>
+            </Link>
             <span aria-hidden="true">·</span>
-            <a
-              href="/disclaimer"
+            <Link
+              to="/disclaimer"
               className="font-medium underline decoration-transparent underline-offset-3 transition-colors duration-200 hover:decoration-current"
             >
               Read Disclaimer
-            </a>
+            </Link>
             <span aria-hidden="true">·</span>
             <span>© 2026 BlockPlanner Pty Ltd</span>
           </p>

@@ -6,7 +6,9 @@ This repo is the **BlockPlanner Discover** frontend. The user flow is:
 2. View a free summary assessment (fetched from the shared backend API)
 3. Optionally purchase the full PDF report via Stripe Checkout
 
-Production URL: `https://discover.blockplanner.com.au/`
+Canonical production URL: `https://blockplanner.com.au/tools/discover/`
+
+Origin URL: `https://discover.blockplanner.com.au/`
 
 Shared backend: `https://lotcheck-be.wittysky-d6d60dbd.australiasoutheast.azurecontainerapps.io`
 
@@ -35,7 +37,7 @@ VITE_GOOGLE_MAPS_API_KEY="your_google_maps_api_key"
 VITE_MIXPANEL_TOKEN=""
 ```
 
-Then open `http://localhost:5173`.
+Then open `http://localhost:5173/tools/discover/`.
 
 ## Build
 
@@ -48,10 +50,15 @@ The production build output is written to `dist/`.
 
 ## Routes
 
-- `/` – address search
-- `/assessment?address=...` – free block assessment (gated by email)
-- `/checkout?success=1` or `/checkout?cancel=1` – return page after Stripe Checkout
-- `/privacy` – privacy policy
+The routes below are relative to the deployment base. Production uses
+`/tools/discover/`; the existing origin subdomain continues to serve them from
+`/`.
+
+- `/` - address search
+- `/assessment?address=...` - free block assessment (gated by email)
+- `/checkout?success=1` or `/checkout?cancel=1` - return page after Stripe Checkout
+- `/privacy` - privacy policy
+- `/disclaimer` - disclaimer
 
 ## Backend/API contract
 
