@@ -23,6 +23,7 @@ import MediumDensityContactModal from "./MediumDensityContactModal";
 import MediumDensityReportContent from "./MediumDensityReportContent";
 import OffZoneForm, { type OffZoneFormValues } from "./OffZoneForm";
 import ReportContent from "./ReportContent";
+import UpdatesSubscribeModal from "./UpdatesSubscribeModal";
 
 type ReportSaves = Record<string, { email: string; expiry: number }>;
 const MIN_LOADING_MS = 1800;
@@ -37,6 +38,7 @@ export const FreeBlockAssessmentReport = () => {
   const [email, setEmail] = useState<string>();
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [leaseModalOpen, setLeaseModalOpen] = useState(false);
+  const [subscribeModalOpen, setSubscribeModalOpen] = useState(false);
 
   const hasTrackedLookup = useRef(false);
 
@@ -183,6 +185,16 @@ export const FreeBlockAssessmentReport = () => {
       location: "medium_density_result",
     });
     setLeaseModalOpen(true);
+  };
+
+  const openSubscribeModal = () => {
+    trackCtaClick("subscribe_planning_updates", {
+      address: checkoutData.address,
+      zone: zoneCode,
+      block_size: checkoutData.blockSizeM2,
+      location: "medium_density_result",
+    });
+    setSubscribeModalOpen(true);
   };
 
   /****************************************************
@@ -332,6 +344,16 @@ export const FreeBlockAssessmentReport = () => {
         blockSizeM2={checkoutData.blockSizeM2}
       />
 
+      {subscribeModalOpen && (
+        <UpdatesSubscribeModal
+          isOpen={subscribeModalOpen}
+          setIsOpen={setSubscribeModalOpen}
+          email={email}
+          address={checkoutData.address}
+          zone={zoneCode}
+        />
+      )}
+
       {!isOffZone && isGated && (
         <GatedContentForm onSubmit={handleGatedContent} />
       )}
@@ -341,7 +363,11 @@ export const FreeBlockAssessmentReport = () => {
           "mt-12 container mx-auto px-4 pb-60 lg:pb-12",
           {
             "blur-xs":
-              showOffZone || isGated || contactModalOpen || leaseModalOpen,
+              showOffZone ||
+              isGated ||
+              contactModalOpen ||
+              leaseModalOpen ||
+              subscribeModalOpen,
           },
         ])}
       >
@@ -373,6 +399,7 @@ export const FreeBlockAssessmentReport = () => {
                     savedAddress={savedAddress}
                     onRequestCall={openContactModal}
                     onGetLease={openLeaseModal}
+                    onSubscribe={openSubscribeModal}
                   />
                 ) : (
                   <ReportContent report={report} savedAddress={savedAddress} />

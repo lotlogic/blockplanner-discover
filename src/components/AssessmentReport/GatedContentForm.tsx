@@ -14,7 +14,7 @@ const gatedContentFormSchema = z.object({
       message: "Invalid email format",
     })
     .trim(),
-  terms: z.literal(true, {
+  privacyAccepted: z.literal(true, {
     error: "You must agree to proceed",
   }),
 });
@@ -49,10 +49,7 @@ const GatedContentForm = (props: GatedContentProps) => {
           Enter your email to view your development assessment.
         </Heading>
 
-        <p className="pt-2 text-balance">
-          We'll also send you a copy and notify you if ACT planning rules change
-          for your property.
-        </p>
+        <p className="pt-2 text-balance">We&apos;ll also send you a copy.</p>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-4 w-full max-w-91 mx-auto mt-6"
@@ -84,11 +81,11 @@ const GatedContentForm = (props: GatedContentProps) => {
             )}
           </div>
           <div>
-            <label className="flex items-start gap-3 cursor-pointer">
+            <label className="relative flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"
-                {...register("terms")}
-                aria-invalid={errors.terms ? "true" : "false"}
+                {...register("privacyAccepted")}
+                aria-invalid={errors.privacyAccepted ? "true" : "false"}
                 className={classList(
                   "peer",
                   "relative",
@@ -101,22 +98,26 @@ const GatedContentForm = (props: GatedContentProps) => {
               />
               <Check
                 className={classList([
-                  "absolute size-4 p-px mt-0.75 ml-px",
+                  "pointer-events-none absolute top-1 left-px size-4 p-px",
                   "hidden outline-none",
                   "peer-checked:block",
                 ])}
               />
               <span className="text-sm text-left">
                 I agree to BlockPlanner's{" "}
-                <a href="/privacy" className="font-semibold" target="_blank">
+                <a
+                  href="/privacy"
+                  className="font-semibold"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Privacy Policy
-                </a>{" "}
-                and to receive occasional updates (you can unsubscribe anytime)
+                </a>
               </span>
             </label>
-            {errors.terms && (
+            {errors.privacyAccepted && (
               <p className="text-xs text-error pl-1 mt-1" role="alert">
-                {errors.terms.message}
+                {errors.privacyAccepted.message}
               </p>
             )}
           </div>
@@ -124,7 +125,7 @@ const GatedContentForm = (props: GatedContentProps) => {
         </form>
         <small className="block text-xs mt-6 text-balance">
           We require an email to prevent automated scraping and ensure you
-          receive rule updates.
+          receive your report.
         </small>
       </div>
     </TextModal>

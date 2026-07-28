@@ -23,7 +23,7 @@ const PRODUCT_SUCCESS_COPY: Record<
     summary:
       "Thank you for your purchase. The BlockPlanner team will retrieve and review your Crown lease.",
     detail:
-      "Your Crown lease and plain-English summary will be delivered directly to your inbox.",
+      "Your Crown lease and clear summary will be delivered directly to your inbox.",
   },
 };
 

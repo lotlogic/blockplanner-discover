@@ -20,7 +20,7 @@ const steps = [
   {
     number: "3",
     title: "Get your free report",
-    body: "A clear summary of what your block can support - granny flat, dual occupancy, subdivision, and more - explained in plain terms.",
+    body: "A clear summary of what your block can support, including granny flats, dual occupancy, subdivision, and more.",
   },
 ];
 
@@ -45,9 +45,8 @@ export const HomePage = () => {
               Understanding your property in three steps
             </h2>
             <p className="mx-auto mt-5 max-w-4xl text-base leading-7 text-bp-sand/80 md:text-lg md:leading-7">
-              No planning knowledge required. We translate ACT planning rules
-              into plain language and tell you exactly what matters for your
-              block.
+              No planning knowledge required. We explain the ACT planning rules
+              that apply and tell you exactly what matters for your block.
             </p>
 
             <div className="mt-12 grid gap-9 md:mt-16 md:grid-cols-3 md:gap-8">
@@ -90,6 +89,76 @@ export const HomePage = () => {
             </a>
           </div>
         </section>
+
+        <section className="mt-0! max-w-none! bg-bp-sand px-0! py-14 md:py-18">
+          <div className="mx-auto flex max-w-5xl flex-col gap-5 px-4 text-bp-blueGum md:px-8">
+            <h2 className="text-2xl font-semibold md:text-3xl">
+              Free education at every step
+            </h2>
+            <p className="max-w-4xl text-base leading-8 text-bp-blueGum/78">
+              Practical guides on ACT planning, development pathways, and what
+              the rules mean for homeowners. BlockPlanner also advocates for
+              clearer, more accessible planning information for ACT homeowners.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="https://linkedin.com/company/blockplanner"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded border border-bp-blueGum/15 bg-white px-4 py-2 text-sm font-semibold text-bp-blueGum transition-colors hover:bg-bp-blueGum hover:text-bp-sand"
+              >
+                LinkedIn
+              </a>
+              <a
+                href="https://instagram.com/blockplanner"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded border border-bp-blueGum/15 bg-white px-4 py-2 text-sm font-semibold text-bp-blueGum transition-colors hover:bg-bp-blueGum hover:text-bp-sand"
+              >
+                Instagram
+              </a>
+              <a
+                href="https://facebook.com/blockplanner"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded border border-bp-blueGum/15 bg-white px-4 py-2 text-sm font-semibold text-bp-blueGum transition-colors hover:bg-bp-blueGum hover:text-bp-sand"
+              >
+                Facebook
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <footer className="max-w-none! bg-bp-blueGum px-4 py-8 text-bp-sand md:px-8">
+          <div className="mx-auto flex max-w-5xl flex-col gap-4 text-sm md:flex-row md:items-center md:justify-between">
+            <div>
+              <div className="font-semibold">BlockPlanner Pty Ltd</div>
+              <div className="mt-1 text-bp-sand/58">
+                Helping ACT homeowners understand what they can build, upgrade
+                and what it costs.
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-2 text-bp-sand/70">
+              <a
+                href="https://discover.blockplanner.com.au/privacy"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-bp-sand"
+              >
+                Privacy policy
+              </a>
+              <a
+                href="https://discover.blockplanner.com.au/disclaimer"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-bp-sand"
+              >
+                Read Disclaimer
+              </a>
+              <span>© 2026 BlockPlanner Pty Ltd</span>
+            </div>
+          </div>
+        </footer>
       </Main>
     </>
   );

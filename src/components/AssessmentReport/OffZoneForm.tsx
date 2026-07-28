@@ -23,13 +23,9 @@ const offZoneFormSchema = z.object({
     })
     .trim(),
   clientName: z.string().trim().min(2, "Please enter a name"),
-  clientPhone: z
-    .string()
-    .trim()
-    .refine(isValidPhoneNumber, {
-      message:
-        "Enter a valid phone number, including country code if overseas",
-    }),
+  clientPhone: z.string().trim().refine(isValidPhoneNumber, {
+    message: "Enter a valid phone number, including country code if overseas",
+  }),
   intent: z.enum(intentOptions, {
     message: "Please select your intent",
   }),
@@ -69,8 +65,8 @@ const OffZoneForm = (props: Props) => {
         </Heading>
 
         <p className="pt-2 text-balance">
-          The free report covers RZ1 and RZ2 properties. Your property is in a
-          different zone - RZ3, RZ4, RZ5, industrial, commercial, or a
+          The free report covers residential properties (RZ1 - RZ4). Your
+          property is in a different zone - industrial, commercial, or a
           designated area - where different rules apply, so we assess these
           individually.
         </p>

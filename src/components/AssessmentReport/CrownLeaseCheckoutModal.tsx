@@ -171,7 +171,9 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
             </li>
             <li className="flex gap-3">
               <Check className="mt-1 size-4 shrink-0 text-bp-eucalypt" />
-              <span>A plain-English summary of what it means</span>
+              <span>
+                A clear explanation of what it means for your potential LVC
+              </span>
             </li>
             <li className="flex gap-3">
               <Check className="mt-1 size-4 shrink-0 text-bp-eucalypt" />

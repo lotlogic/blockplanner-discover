@@ -1,12 +1,13 @@
 import type { GeoApi } from "@/@types/api";
 import Button from "@/components/ui/Button";
-import { ArrowRight, FileText, Phone } from "lucide-react";
+import { ArrowRight, FileText, Mail, Phone } from "lucide-react";
 
 type Props = {
   report?: GeoApi;
   savedAddress: string;
   onRequestCall: () => void;
   onGetLease: () => void;
+  onSubscribe: () => void;
 };
 
 const MEDIUM_DENSITY_HEIGHTS: Record<string, number> = {
@@ -19,6 +20,7 @@ export const MediumDensityReportContent = ({
   savedAddress,
   onRequestCall,
   onGetLease,
+  onSubscribe,
 }: Props) => {
   const zoneCode = (
     report?.zone.zoneCode ||
@@ -99,18 +101,18 @@ export const MediumDensityReportContent = ({
             terrace houses, and apartments.
           </p>
           <p>
-            Block size alone doesn&apos;t set a maximum number of dwellings here.
-            What you can build comes down to how well a design uses the site
-            within the limits that apply: a height limit for multi-unit housing
-            ({storeys} storeys in your case), site coverage of no more than 50%
-            of the block, and meeting the Residential Policy assessment
+            Block size alone doesn&apos;t set a maximum number of dwellings
+            here. What you can build comes down to how well a design uses the
+            site within the limits that apply: a height limit for multi-unit
+            housing ({storeys} storeys in your case), site coverage of no more
+            than 50% of the block, and meeting the Residential Policy assessment
             outcomes.
           </p>
           <p>
             Depending on your proposal, other planning documents would apply
-            too: District Policies (what&apos;s expected in your part of Canberra),
-            Design Guides (how the building should look) and Technical
-            Specifications (the detail).
+            too: District Policies (what&apos;s expected in your part of
+            Canberra), Design Guides (how the building should look) and
+            Technical Specifications (the detail).
           </p>
         </div>
 
@@ -124,15 +126,16 @@ export const MediumDensityReportContent = ({
         <div className="mt-7 space-y-5 text-[0.96rem] leading-7 text-bp-blueGum/78">
           <p>
             What&apos;s worth doing depends on your site, your street, and
-            what&apos;s selling in your suburb. It also depends on what you&apos;re
-            trying to get out of it, and what you&apos;re willing to take on.
+            what&apos;s selling in your suburb. It also depends on what
+            you&apos;re trying to get out of it, and what you&apos;re willing to
+            take on.
           </p>
           <p>
-            Leave your details and we&apos;ll call you within two business days to
-            understand what would be useful. This could include a massing study
-            showing what fits on your site, a feasibility model on whether the
-            numbers work, or an introduction to a trusted builder, architect or
-            developer.
+            Leave your details and we&apos;ll call you within two business days
+            to understand what would be useful. This could include a massing
+            study showing what fits on your site, a feasibility model on whether
+            the numbers work, or an introduction to a trusted builder, architect
+            or developer.
           </p>
         </div>
 
@@ -150,21 +153,32 @@ export const MediumDensityReportContent = ({
           <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
             <div>
               <h4 className="text-xl font-semibold text-bp-blueGum">
-                Would you rather start with your Crown lease?
+                Rather have something concrete first?
               </h4>
               <p className="mt-3 text-sm leading-7 text-bp-blueGum/72">
-                Your Crown lease sets its own limits on top of the planning
-                rules. We&apos;ll send you a copy from government records, with a
-                summary of what it means for your block.
+                Your Crown lease is specific to your block, and its wording can
+                limit what you build even where the zone allows more. We can
+                retrieve it from government records and tell you what it means.
+                Or leave your email to get free planning guides while you
+                decide.
               </p>
             </div>
-            <Button
-              label="Get my lease - $149"
-              variant="outline"
-              leftIcon={<FileText className="size-5" />}
-              onClick={onGetLease}
-              className="min-h-13 w-full whitespace-nowrap px-6 md:w-auto"
-            />
+            <div className="flex w-full flex-col gap-3 md:w-auto">
+              <Button
+                label="Get my lease - $149"
+                variant="outline"
+                leftIcon={<FileText className="size-5" />}
+                onClick={onGetLease}
+                className="min-h-13 w-full whitespace-nowrap px-6"
+              />
+              <Button
+                label="Subscribe for updates"
+                variant="secondary"
+                leftIcon={<Mail className="size-5" />}
+                onClick={onSubscribe}
+                className="min-h-13 w-full whitespace-nowrap px-6"
+              />
+            </div>
           </div>
         </div>
       </div>
