@@ -6,7 +6,7 @@ This repo is the **BlockPlanner Discover** frontend. The user flow is:
 2. View a free summary assessment (fetched from the shared backend API)
 3. Optionally purchase the full PDF report via Stripe Checkout
 
-Canonical production URL: `https://blockplanner.com.au/tools/discover/`
+Canonical production URL: `https://www.blockplanner.com.au/tools/discover/`
 
 Origin URL: `https://discover.blockplanner.com.au/`
 
