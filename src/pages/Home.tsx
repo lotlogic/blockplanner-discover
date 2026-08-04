@@ -110,20 +110,12 @@ export const HomePage = () => {
                 LinkedIn
               </a>
               <a
-                href="https://instagram.com/blockplanner"
+                href="https://www.instagram.com/blockplanner.au/"
                 target="_blank"
                 rel="noreferrer"
                 className="rounded border border-bp-blueGum/15 bg-white px-4 py-2 text-sm font-semibold text-bp-blueGum transition-colors hover:bg-bp-blueGum hover:text-bp-sand"
               >
                 Instagram
-              </a>
-              <a
-                href="https://facebook.com/blockplanner"
-                target="_blank"
-                rel="noreferrer"
-                className="rounded border border-bp-blueGum/15 bg-white px-4 py-2 text-sm font-semibold text-bp-blueGum transition-colors hover:bg-bp-blueGum hover:text-bp-sand"
-              >
-                Facebook
               </a>
             </div>
           </div>
