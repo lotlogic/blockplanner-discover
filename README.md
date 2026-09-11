@@ -4,6 +4,11 @@ BlockPlanner Discover is the free ACT property assessment frontend. Users can
 search for a property, review planning information, submit enquiries and access
 paid BlockPlanner services.
 
+Free residential reports display automatically after the loading screen, without
+an email gate. Contact details are collected only when users choose an enquiry,
+subscription or paid service. Properties outside the supported residential zones
+continue to use the individual assessment enquiry form.
+
 ## Public URL and Origin
 
 The canonical public URL is:
@@ -118,7 +123,6 @@ Discover uses the shared LotLogic and BlockPlanner backend configured by
 `VITE_API_URL`. The frontend calls:
 
 - `GET /api/geo/act-zone` for ACT zoning and assessment data
-- `POST /api/monday/free-assessment-leads` for free assessment submissions
 - `POST /api/monday/product-leads` for subscriptions and product leads
 - `POST /api/enquiry/get-in-touch` for contact and request-a-call submissions
 - `POST /api/stripe/create-checkout-session` for paid checkout
@@ -145,15 +149,19 @@ be duplicated in frontend code or environment variables.
 ## Analytics
 
 Mixpanel uses the EU project host. Autocapture and session replay are disabled.
-Only explicit product events are sent, and no events are sent when
+Only explicit Mixpanel product events are sent, and no Mixpanel events are sent when
 `VITE_MIXPANEL_TOKEN` is blank.
+
+The Meta Pixel supplied by the marketing team is installed separately in
+`index.html`, using pixel ID `2104658013496667`. It loads Meta's script
+asynchronously and sends a `PageView` on each document load, with the supplied
+image fallback for browsers without JavaScript.
 
 Key events include:
 
 - `lookup_started`
 - `lookup_performed`
 - `cta_click`
-- `gated_email_submit`
 - `checkout_form_submit`
 - `checkout_redirect`
 - `checkout_error`

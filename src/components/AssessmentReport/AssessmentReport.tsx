@@ -1,12 +1,10 @@
 import type { GeoApi } from "@/@types/api";
 import Heading from "@/components/ui/Heading";
 import {
-  identifyUser,
   trackCtaClick,
   trackEvent,
   trackLookupPerformed,
 } from "@/utils/analytics";
-import { recordFreeAssessmentLead } from "@/utils/freeAssessmentLead";
 import { classList } from "@/utils/tailwind";
 import { useLocalStorage, useSessionStorage } from "@uidotdev/usehooks";
 import { motion as m } from "framer-motion";
@@ -14,9 +12,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { FullReportCta } from "../FullReportCta/FullReportCta";
 import ErrorMessage from "./ErrorMessage";
-import GatedContentForm, {
-  type GatedContentFormValues,
-} from "./GatedContentForm";
 import LoadingMessage from "./LoadingMessage";
 import CrownLeaseCheckoutModal from "./CrownLeaseCheckoutModal";
 import MediumDensityContactModal from "./MediumDensityContactModal";
@@ -33,7 +28,6 @@ export const FreeBlockAssessmentReport = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isOffZone, setIsOffZone] = useState(false);
   const [showOffZone, setShowOffZone] = useState(false);
-  const [isGated, setIsGated] = useState(false);
   const [error, setError] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [contactModalOpen, setContactModalOpen] = useState(false);
@@ -54,6 +48,13 @@ export const FreeBlockAssessmentReport = () => {
   ****************************************************/
   useEffect(() => {
     let cancelled = false;
+    setIsLoading(true);
+    setReport(undefined);
+    setError(undefined);
+    setEmail(undefined);
+    setIsOffZone(false);
+    setShowOffZone(false);
+    hasTrackedLookup.current = false;
 
     const fetchData = async () => {
       const startedAt = Date.now();
@@ -113,12 +114,12 @@ export const FreeBlockAssessmentReport = () => {
   }, [report]);
 
   /****************************************************
-    show gated content if it is a saved search
+    restore contact details and handle unsupported zones
   ****************************************************/
   useEffect(() => {
-    if (!report?.formattedAddress) return;
+    if (!report?.formattedAddress || isLoading) return;
 
-    // save current address for checkout (and key for gated content)
+    // Save the current address for checkout and return links.
     setSavedAddress(report.formattedAddress);
 
     // clear expired saves
@@ -134,7 +135,7 @@ export const FreeBlockAssessmentReport = () => {
 
     // check for current save (using de-expired saves)
     const currentSave = newSaves[report.formattedAddress];
-    if (currentSave) setEmail(currentSave.email);
+    setEmail(currentSave?.email);
 
     const zoneCode = (
       report.zone.zoneCode ||
@@ -147,8 +148,7 @@ export const FreeBlockAssessmentReport = () => {
 
     setIsOffZone(isOtherZone);
     setShowOffZone(isOtherZone && !currentSave);
-    setIsGated(isStandardReportZone && !currentSave);
-  }, [report]);
+  }, [report, isLoading]);
 
   const zoneCode = (
     report?.zone.zoneCode ||
@@ -200,61 +200,6 @@ export const FreeBlockAssessmentReport = () => {
   /****************************************************
     handle forms
   ****************************************************/
-  const handleGatedContent = (formData: GatedContentFormValues) => {
-    const addressKey = report?.formattedAddress || savedAddress;
-    if (addressKey) {
-      identifyUser(formData.email, {
-        address: addressKey,
-        zone: report?.lotCheckRules?.zoneCode ?? report?.zone?.zoneCode ?? null,
-        block_size: report?.lotCheckRules?.blockAreaSqm ?? null,
-        parcel_id:
-          report?.block?.blockKey ??
-          (report?.block?.objectId != null
-            ? String(report.block.objectId)
-            : null),
-      });
-
-      trackCtaClick("view_report", { address: addressKey });
-      trackEvent("gated_email_submit", {
-        address: addressKey,
-        email: formData.email,
-        timestamp: new Date().toISOString(),
-      });
-
-      void recordFreeAssessmentLead({
-        email: formData.email,
-        address: addressKey,
-        zone: zoneCode,
-        blockSizeM2: report?.lotCheckRules?.blockAreaSqm,
-      }).catch((error: any) => {
-        const message = error?.message || String(error);
-        trackEvent("free_assessment_lead_capture_error", {
-          email: formData.email,
-          message,
-          timestamp: new Date().toISOString(),
-        });
-        console.log("Error: " + message);
-      });
-
-      // save the search to localstorage
-      let newSaves = { ...savedSearches };
-      newSaves[addressKey] = {
-        email: formData.email,
-        expiry: new Date().getTime() + 7 * 24 * 60 * 60 * 1000,
-      };
-      setSavedSearches(newSaves);
-
-      // save email for payment form
-      setEmail(formData.email);
-
-      // keep session address in sync (used for checkout return link)
-      setSavedAddress(addressKey);
-
-      // show content
-      setIsGated(false);
-    }
-  };
-
   const handleOffZone = async (formData: OffZoneFormValues) => {
     const addressKey = report?.formattedAddress || savedAddress;
     if (addressKey) {
@@ -354,17 +299,12 @@ export const FreeBlockAssessmentReport = () => {
         />
       )}
 
-      {!isOffZone && isGated && (
-        <GatedContentForm onSubmit={handleGatedContent} />
-      )}
-
       <section
         className={classList([
           "mt-12 container mx-auto px-4 pb-60 lg:pb-12",
           {
             "blur-xs":
               showOffZone ||
-              isGated ||
               contactModalOpen ||
               leaseModalOpen ||
               subscribeModalOpen,
@@ -425,7 +365,7 @@ export const FreeBlockAssessmentReport = () => {
               data={{
                 ...checkoutData,
               }}
-              isDisabled={isLoading || isGated || isOffZone || !!error}
+              isDisabled={isLoading || isOffZone || !!error}
               location="desktop"
             />
           )}
@@ -437,7 +377,7 @@ export const FreeBlockAssessmentReport = () => {
           data={{
             ...checkoutData,
           }}
-          isDisabled={isLoading || isGated || isOffZone || !!error}
+          isDisabled={isLoading || isOffZone || !!error}
           location="mobile"
         />
       )}
