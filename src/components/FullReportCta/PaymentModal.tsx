@@ -161,13 +161,13 @@ export const PaymentModal = (props: Props) => {
   return (
     <TextModal open={props.isOpen} onClose={closeModal}>
       <Heading tag="h2" size="h2" className="text-center">
-        Want a report that considers what's actually on your block?
+        Ready for the next step?
       </Heading>
 
       <p className="text-center text-lg">
-        Upgrade to the full PDF report for a clearer picture of what's worth
-        pursuing. We look at your existing house, trees, easements, setbacks and
-        access, then send practical next steps straight to your inbox.
+        You've seen what your zone and size allow. The full report brings in
+        your title and current imagery to show how those factors play out on
+        your block, with practical next steps sent to your inbox.
       </p>
 
       <form
@@ -302,7 +302,7 @@ export const PaymentModal = (props: Props) => {
             </p>
           )}
         </div>
-        <Button label="Request your report" type="submit" />
+        <Button label="Order via Stripe - $299" type="submit" />
       </form>
     </TextModal>
   );
