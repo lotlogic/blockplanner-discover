@@ -2,7 +2,7 @@ import type { GeoApi } from "@/@types/api";
 import type { CheckoutData } from "@/components/FullReportCta/PaymentModal";
 import { FullReportCta } from "@/components/FullReportCta/FullReportCta";
 import { toTitleCase } from "@/utils/text";
-import { ChevronDown, Linkedin } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { buildFreeReportCards } from "./free-report";
@@ -336,9 +336,13 @@ export const ReportContent = ({
                   aria-label="Mitch Porteous on LinkedIn"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex size-6.5 items-center justify-center rounded-full border border-bp-blueGum/15 text-bp-blueGum/70 transition-colors hover:bg-bp-blueGum/5"
+                  className="flex size-6.5 items-center justify-center rounded-full border border-bp-blueGum/15 transition-colors hover:bg-bp-blueGum/5"
                 >
-                  <Linkedin className="size-3.5" />
+                  <img
+                    src={`${import.meta.env.BASE_URL}images/team/linkedin.png`}
+                    alt=""
+                    className="size-3.5"
+                  />
                 </a>
               </div>
               <p className="mt-1 text-sm text-bp-eucalypt">
@@ -403,8 +407,9 @@ export const ReportContent = ({
       <div className="flex flex-col gap-2 border-t border-bp-blueGum/10 bg-stone-50 px-6 py-4 text-xs uppercase tracking-[0.16em] text-bp-blueGum/55 md:flex-row md:items-center md:justify-between md:px-10">
         <span>blockplanner.com.au</span>
         <span>
-          This tool covers freestanding houses in RZ1 and RZ2. We advise on
-          RZ3 and RZ4 separately.
+          This tool covers freestanding houses in RZ1 and RZ2.
+          <br />
+          We advise on RZ3 and RZ4 separately.
         </span>
       </div>
     </div>

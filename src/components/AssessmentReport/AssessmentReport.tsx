@@ -349,17 +349,19 @@ export const FreeBlockAssessmentReport = () => {
             </div>
           </m.div>
 
-          <section className="text-gray-400 text-center mt-8">
-            General information only, not professional advice. Results are
-            based on block size and zone - site conditions are assessed
-            separately.{" "}
-            <Link
-              to="/disclaimer"
-              className="font-medium underline underline-offset-3"
-            >
-              Read our full disclaimer.
-            </Link>
-          </section>
+          {(isLoading || error || isMediumDensityZone) && (
+            <section className="text-gray-400 text-center mt-8">
+              General information only, not professional advice. Results are
+              based on block size and zone - site conditions are assessed
+              separately.{" "}
+              <Link
+                to="/disclaimer"
+                className="font-medium underline underline-offset-3"
+              >
+                Read our full disclaimer.
+              </Link>
+            </section>
+          )}
         </div>
       </section>
     </>
