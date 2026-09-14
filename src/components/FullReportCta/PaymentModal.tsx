@@ -165,9 +165,11 @@ export const PaymentModal = (props: Props) => {
       </Heading>
 
       <p className="text-center text-lg">
-        You've seen what your zone and size allow. The full report brings in
-        your title and current imagery to show how those factors play out on
-        your block, with practical next steps sent to your inbox.
+        A full assessment of your block, so you know what's viable and worth
+        pursuing.
+        <br />
+        And if you want to go further, we can take it all the way through to
+        approvals with you.
       </p>
 
       <form
