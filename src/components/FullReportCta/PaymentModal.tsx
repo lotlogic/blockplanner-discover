@@ -166,10 +166,8 @@ export const PaymentModal = (props: Props) => {
 
       <p className="text-center text-lg">
         A full assessment of your block, so you know what's viable and worth
-        pursuing.
-        <br />
-        And if you want to go further, we can take it all the way through to
-        approvals with you.
+        pursuing. If you want to go further, we can take it all the way
+        through to approvals with you.
       </p>
 
       <form
