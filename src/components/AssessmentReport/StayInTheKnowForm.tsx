@@ -140,9 +140,8 @@ export const StayInTheKnowForm = ({ address, zone }: Props) => {
         <Button
           label="Subscribe"
           type="submit"
-          variant="outline"
           loading={isSubmitting}
-          className="min-h-13.5 shrink-0 border-primary! bg-white! px-6 text-bp-blueGum! hover:text-white! focus-visible:text-white!"
+          className="min-h-13.5 shrink-0 px-6"
         />
       </div>
 

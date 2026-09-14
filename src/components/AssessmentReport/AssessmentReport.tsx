@@ -317,7 +317,7 @@ export const FreeBlockAssessmentReport = () => {
             transition={{ duration: 0.3, delay: 0.25, ease: "easeOut" }}
           >
             <Heading tag="h1" size="h1">
-              Your block assessment
+              Here&apos;s your snapshot
             </Heading>
           </m.div>
           <m.div

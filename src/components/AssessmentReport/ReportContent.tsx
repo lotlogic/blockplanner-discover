@@ -152,7 +152,7 @@ export const ReportContent = ({
               </strong>{" "}
               means the planning framework allows it on a block of this zone
               and size. It doesn&apos;t yet account for what&apos;s already on
-              your land.
+              your land. We walk you through that below.
             </p>
             <p>
               Click{" "}
@@ -165,13 +165,7 @@ export const ReportContent = ({
           </div>
         </div>
 
-        <div className="mt-8 border-b border-bp-blueGum/12 pb-3">
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-bp-eucalypt">
-            What you could do with this block
-          </p>
-        </div>
-
-        <div className="mt-6 space-y-4">
+        <div className="mt-8 space-y-4">
           {cards.map((card) => {
             const isExpanded = Boolean(expandedCards[card.key]);
             const bodyId = `report-card-${card.key}-body`;
@@ -193,15 +187,20 @@ export const ReportContent = ({
                 key={card.key}
                 className="rounded-sm border border-bp-blueGum/10 bg-white p-5 shadow-[0_10px_28px_rgba(73,79,74,0.06)] md:p-6"
               >
-                <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-start">
+                <div className="flex items-center justify-between gap-4">
                   <button
                     type="button"
-                    className="group block w-full rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bp-eucalypt"
+                    className="group block min-w-0 rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bp-eucalypt"
                     aria-expanded={isExpanded}
                     aria-controls={bodyId}
                     onClick={() => toggleCard(card.key)}
                   >
-                    <h4 className="text-xl font-semibold text-bp-blueGum transition-colors group-hover:text-bp-eucalypt">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusStyles}`}
+                    >
+                      {statusLabel}
+                    </span>
+                    <h4 className="mt-3 text-xl font-semibold text-bp-blueGum transition-colors group-hover:text-bp-eucalypt">
                       {card.title}
                     </h4>
                     <p className="mt-1 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-bp-blueGum/55">
@@ -209,28 +208,21 @@ export const ReportContent = ({
                     </p>
                   </button>
 
-                  <div className="flex flex-col items-start gap-2 md:items-end">
-                    <span
-                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusStyles}`}
-                    >
-                      {statusLabel}
-                    </span>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1 rounded-sm text-xs font-semibold uppercase tracking-[0.12em] text-bp-eucalypt transition-colors hover:text-bp-blueGum focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-bp-eucalypt"
-                      aria-expanded={isExpanded}
-                      aria-controls={bodyId}
-                      onClick={() => toggleCard(card.key)}
-                    >
-                      {isExpanded ? "Show less" : "See more"}
-                      <ChevronDown
-                        className={`size-4 transition-transform ${
-                          isExpanded ? "rotate-180" : ""
-                        }`}
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-sm text-xs font-semibold uppercase tracking-[0.12em] text-bp-eucalypt transition-colors hover:text-bp-blueGum focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-bp-eucalypt"
+                    aria-expanded={isExpanded}
+                    aria-controls={bodyId}
+                    onClick={() => toggleCard(card.key)}
+                  >
+                    {isExpanded ? "Show less" : "See more"}
+                    <ChevronDown
+                      className={`size-4 transition-transform ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </button>
                 </div>
 
                 {isExpanded && (
@@ -255,14 +247,13 @@ export const ReportContent = ({
 
         <div className="mt-8 rounded-sm border border-bp-blueGum/10 bg-white px-5 py-5 md:px-6">
           <h4 className="text-lg font-semibold text-bp-blueGum">
-            There is more to the picture
+            Here&apos;s what would be assessed next
           </h4>
           <div className="mt-4 space-y-4 text-sm leading-7 text-bp-blueGum/76">
             <p>
-              These results are based on your block&apos;s zone and size.
-              What&apos;s actually possible depends on what&apos;s already
-              there. Here&apos;s what we look at more closely in the paid
-              report.
+              These results are based on your property&apos;s zone and size.
+              Whether a project is achievable depends on more than that.
+              Here&apos;s what we&apos;d look at next.
             </p>
             <p>
               <strong>Crown lease.</strong> All Canberra homes are held under
@@ -278,10 +269,10 @@ export const ReportContent = ({
             </p>
             <p>
               <strong>Easements.</strong> An easement is a right that allows
-              someone else to use part of your land for a specific purpose -
-              common examples are stormwater drains, gas lines, or shared
-              driveways. Depending on where an easement sits on your block, it
-              can limit where a second dwelling can go. Your title may also have
+              someone else to use part of your land for a specific purpose,
+              such as stormwater drains, gas lines, or shared driveways.
+              Depending on where an easement sits on your block, it can limit
+              where a second dwelling can go. Your title may also have
               easements that don&apos;t show up in standard mapping.
             </p>
             <p>
@@ -291,22 +282,19 @@ export const ReportContent = ({
             <p>
               <strong>Heritage.</strong> If your property is within a heritage
               overlay, development proposals need to respond to heritage
-              requirements. The paid report includes a referral to a trusted
-              heritage architect for a preliminary assessment.
+              requirements. This may include input from a heritage architect.
             </p>
             <p>
               <strong>Additional planning controls.</strong> Depending on your
               suburb and what you&apos;re planning, district policies and
-              subdivision requirements may also apply. We can advise on these
-              separately - get in touch if this is relevant to your project.
+              subdivision requirements may also apply.
             </p>
             <p>
               <strong>Lease Variation Charge.</strong> If you&apos;re
               considering adding dwellings to your block, an LVC may apply when
               you seek to separately title additional dwellings. This applies
               across all residential zones and the amount varies by suburb, zone
-              and number of dwellings. The paid report provides further context
-              and links to relevant resources.
+              and number of dwellings.
             </p>
           </div>
         </div>
@@ -321,7 +309,7 @@ export const ReportContent = ({
 
         <div className="mt-8 border-t border-bp-blueGum/10 pt-8">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-bp-eucalypt">
-            Meet the team
+            The person behind this
           </p>
 
           <div className="mt-5 flex flex-wrap items-start gap-6">
