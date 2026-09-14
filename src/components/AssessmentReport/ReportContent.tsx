@@ -1,13 +1,17 @@
 import type { GeoApi } from "@/@types/api";
+import type { CheckoutData } from "@/components/FullReportCta/PaymentModal";
+import { FullReportCta } from "@/components/FullReportCta/FullReportCta";
 import { toTitleCase } from "@/utils/text";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Linkedin } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { buildFreeReportCards } from "./free-report";
+import { StayInTheKnowForm } from "./StayInTheKnowForm";
 
 type Props = {
   savedAddress: string;
   report?: GeoApi;
+  checkoutData: CheckoutData;
 };
 
 const renderReportText = (text: string) => {
@@ -53,7 +57,11 @@ const renderReportText = (text: string) => {
   );
 };
 
-export const ReportContent = ({ report, savedAddress }: Props) => {
+export const ReportContent = ({
+  report,
+  savedAddress,
+  checkoutData,
+}: Props) => {
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>(
     {},
   );
@@ -63,7 +71,7 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
     toTitleCase(report?.zone.properties?.LAND_USE_POLICY_DESC),
   ]
     .filter(Boolean)
-    .join(" - ");
+    .join(" · ");
 
   const address = report?.formattedAddress || savedAddress;
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -90,30 +98,19 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
 
   return (
     <div className="text-bp-blueGum">
-      <div className="flex items-center justify-between bg-bp-blueGum px-6 py-5 md:px-10">
-        <div>
-          <p className="text-[0.62rem] font-medium uppercase tracking-[0.3em] text-bp-sand/70">
-            BlockPlanner
-          </p>
-          <h2 className="mt-1 text-2xl font-semibold text-bp-sand md:text-3xl">
-            Property Assessment
-          </h2>
-        </div>
-        <p className="text-right text-[0.62rem] font-medium uppercase tracking-[0.24em] text-bp-sand/60">
-          Free report
-        </p>
-      </div>
-
       <div className="border-b border-bp-blueGum/10 bg-bp-sand px-6 py-6 md:px-10">
-        <h3 className="text-2xl font-semibold leading-tight text-bp-blueGum md:text-[2rem]">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-bp-eucalypt">
+            Free property snapshot
+          </p>
+          <p className="text-[0.62rem] font-medium uppercase tracking-[0.24em] text-bp-blueGum/45">
+            {reportMonth}
+          </p>
+        </div>
+        <h3 className="mt-3 text-2xl font-semibold leading-tight text-bp-blueGum md:text-[2rem]">
           {address.replace(", Australia", "")}
         </h3>
         <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-          {!!report?.zone.zoneCode && (
-            <span className="rounded-full bg-bp-blueGum px-3 py-1 font-medium uppercase tracking-[0.12em] text-bp-sand">
-              {report.zone.zoneCode}
-            </span>
-          )}
           {!!zoneText && (
             <span className="rounded-full border border-bp-blueGum/15 bg-white px-3 py-1 text-bp-blueGum/75">
               {zoneText}
@@ -124,9 +121,6 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
               {report.lotCheckRules.blockAreaSqm.toLocaleString("en-AU")} m²
             </span>
           )}
-          <span className="rounded-full border border-bp-blueGum/15 bg-white px-3 py-1 text-bp-blueGum/75">
-            {reportMonth}
-          </span>
         </div>
       </div>
 
@@ -149,37 +143,29 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
       <div className="px-6 py-8 md:px-10 md:py-10">
         <div className="rounded-sm border border-bp-blueGum/10 bg-bp-sand px-5 py-5 md:px-6">
           <p className="text-xs font-semibold uppercase text-bp-eucalypt">
-            Before you read your results
+            Before you read on
           </p>
           <div className="mt-4 space-y-4 text-sm leading-6 text-bp-blueGum/76">
             <p>
-              These results give you a clear starting point - what the planning
-              framework says is possible on a block like yours, based on your
-              zone and size. For most homeowners, what you&apos;ll see below
-              reflects what&apos;s genuinely available to you.
+              <strong className="font-semibold text-bp-blueGum">
+                Possible
+              </strong>{" "}
+              means the planning framework allows it on a block of this zone
+              and size. It doesn&apos;t yet account for what&apos;s already on
+              your land. We walk you through that below.
             </p>
             <p>
-              One thing worth checking alongside your results: your Crown lease.
-              All Canberra homes are held under a Crown lease rather than
-              freehold title, and some leases limit what can be built regardless
-              of what the planning framework permits. If you&apos;re not sure,
-              it&apos;s easy to check - your lease purpose clause is available
-              through Access Canberra or your title documents.
-            </p>
-            <p>
-              For anything beyond what&apos;s covered here, see the bottom of
-              this page - and your options on the right.
+              Click{" "}
+              <strong className="font-semibold text-bp-blueGum">
+                See more
+              </strong>{" "}
+              on any option to understand the nuance and considerations that
+              come with it.
             </p>
           </div>
         </div>
 
-        <div className="mt-8 border-b border-bp-blueGum/12 pb-3">
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-bp-eucalypt">
-            What the current planning rules allow on a property this size
-          </p>
-        </div>
-
-        <div className="mt-6 space-y-4">
+        <div className="mt-8 space-y-4">
           {cards.map((card) => {
             const isExpanded = Boolean(expandedCards[card.key]);
             const bodyId = `report-card-${card.key}-body`;
@@ -201,15 +187,20 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
                 key={card.key}
                 className="rounded-sm border border-bp-blueGum/10 bg-white p-5 shadow-[0_10px_28px_rgba(73,79,74,0.06)] md:p-6"
               >
-                <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-start">
+                <div className="flex items-center justify-between gap-4">
                   <button
                     type="button"
-                    className="group block w-full rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bp-eucalypt"
+                    className="group block min-w-0 rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bp-eucalypt"
                     aria-expanded={isExpanded}
                     aria-controls={bodyId}
                     onClick={() => toggleCard(card.key)}
                   >
-                    <h4 className="text-xl font-semibold text-bp-blueGum transition-colors group-hover:text-bp-eucalypt">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusStyles}`}
+                    >
+                      {statusLabel}
+                    </span>
+                    <h4 className="mt-3 text-xl font-semibold text-bp-blueGum transition-colors group-hover:text-bp-eucalypt">
                       {card.title}
                     </h4>
                     <p className="mt-1 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-bp-blueGum/55">
@@ -217,28 +208,21 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
                     </p>
                   </button>
 
-                  <div className="flex flex-col items-start gap-2 md:items-end">
-                    <span
-                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusStyles}`}
-                    >
-                      {statusLabel}
-                    </span>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1 rounded-sm text-xs font-semibold uppercase tracking-[0.12em] text-bp-eucalypt transition-colors hover:text-bp-blueGum focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-bp-eucalypt"
-                      aria-expanded={isExpanded}
-                      aria-controls={bodyId}
-                      onClick={() => toggleCard(card.key)}
-                    >
-                      {isExpanded ? "Show less" : "See more"}
-                      <ChevronDown
-                        className={`size-4 transition-transform ${
-                          isExpanded ? "rotate-180" : ""
-                        }`}
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-sm text-xs font-semibold uppercase tracking-[0.12em] text-bp-eucalypt transition-colors hover:text-bp-blueGum focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-bp-eucalypt"
+                    aria-expanded={isExpanded}
+                    aria-controls={bodyId}
+                    onClick={() => toggleCard(card.key)}
+                  >
+                    {isExpanded ? "Show less" : "See more"}
+                    <ChevronDown
+                      className={`size-4 transition-transform ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </button>
                 </div>
 
                 {isExpanded && (
@@ -263,14 +247,20 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
 
         <div className="mt-8 rounded-sm border border-bp-blueGum/10 bg-white px-5 py-5 md:px-6">
           <h4 className="text-lg font-semibold text-bp-blueGum">
-            There is more to the picture
+            Here&apos;s what would be assessed next
           </h4>
           <div className="mt-4 space-y-4 text-sm leading-7 text-bp-blueGum/76">
             <p>
-              These results are based on your block&apos;s zone and size.
-              What&apos;s actually possible depends on what&apos;s already
-              there. Here&apos;s what we look at more closely in the paid
-              report.
+              These results are based on your property&apos;s zone and size.
+              Whether a project is achievable depends on more than that.
+              Here&apos;s what we&apos;d look at next.
+            </p>
+            <p>
+              <strong>Crown lease.</strong> All Canberra homes are held under
+              a Crown lease rather than freehold title, and some leases limit
+              what can be built regardless of what the planning framework
+              permits. Your lease purpose clause is available through Access
+              Canberra or your title documents.
             </p>
             <p>
               <strong>Trees.</strong> Registered and regulated trees on your
@@ -279,10 +269,10 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
             </p>
             <p>
               <strong>Easements.</strong> An easement is a right that allows
-              someone else to use part of your land for a specific purpose -
-              common examples are stormwater drains, gas lines, or shared
-              driveways. Depending on where an easement sits on your block, it
-              can limit where a second dwelling can go. Your title may also have
+              someone else to use part of your land for a specific purpose,
+              such as stormwater drains, gas lines, or shared driveways.
+              Depending on where an easement sits on your block, it can limit
+              where a second dwelling can go. Your title may also have
               easements that don&apos;t show up in standard mapping.
             </p>
             <p>
@@ -292,27 +282,104 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
             <p>
               <strong>Heritage.</strong> If your property is within a heritage
               overlay, development proposals need to respond to heritage
-              requirements. The paid report includes a referral to a trusted
-              heritage architect for a preliminary assessment.
+              requirements. This may include input from a heritage architect.
             </p>
             <p>
               <strong>Additional planning controls.</strong> Depending on your
               suburb and what you&apos;re planning, district policies and
-              subdivision requirements may also apply. We can advise on these
-              separately - get in touch if this is relevant to your project.
+              subdivision requirements may also apply.
             </p>
             <p>
               <strong>Lease Variation Charge.</strong> If you&apos;re
               considering adding dwellings to your block, an LVC may apply when
               you seek to separately title additional dwellings. This applies
               across all residential zones and the amount varies by suburb, zone
-              and number of dwellings. The paid report provides further context
-              and links to relevant resources.
+              and number of dwellings.
             </p>
-            <p>
-              <strong>Ready to go further?</strong> See the options on the
-              right.
-            </p>
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <FullReportCta
+            data={checkoutData}
+            isDisabled={false}
+            location="inline"
+          />
+        </div>
+
+        <div className="mt-8 border-t border-bp-blueGum/10 pt-8">
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-bp-eucalypt">
+            The person behind this
+          </p>
+
+          <div className="mt-5 flex flex-wrap items-start gap-6">
+            <a
+              href="https://www.linkedin.com/in/mqporteous/"
+              aria-label="Mitch Porteous on LinkedIn"
+              target="_blank"
+              rel="noreferrer"
+              className="block shrink-0"
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}images/team/mitch-porteous.avif`}
+                alt="Mitch Porteous"
+                className="h-31 w-26 rounded-sm object-cover"
+              />
+            </a>
+            <div className="min-w-0 flex-1 basis-70">
+              <div className="flex items-center gap-2.5">
+                <span className="text-lg font-semibold text-bp-blueGum">
+                  Mitch Porteous
+                </span>
+                <a
+                  href="https://www.linkedin.com/in/mqporteous/"
+                  aria-label="Mitch Porteous on LinkedIn"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex size-6.5 items-center justify-center rounded-full border border-bp-blueGum/15 text-bp-blueGum/70 transition-colors hover:bg-bp-blueGum/5"
+                >
+                  <Linkedin className="size-3.5" />
+                </a>
+              </div>
+              <p className="mt-1 text-sm text-bp-eucalypt">
+                Founder, BlockPlanner · a Canberra planning and advocacy
+                practice
+              </p>
+              <p className="mt-3 text-sm leading-7 text-bp-blueGum/76">
+                We built this tool so you can see what&apos;s possible before
+                spending money on specialist consultants or chasing
+                government.
+              </p>
+              <p className="mt-3 text-sm leading-7 text-bp-blueGum/76">
+                <a
+                  href="https://region.com.au/empower-owner-occupiers-tax-hit-puts-missing-middle-out-of-reach-for-small-players-says-submission/996456/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-primary underline underline-offset-3"
+                >
+                  In the news
+                </a>
+                , Region Canberra, 5 September 2026.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-7 flex flex-wrap items-start gap-6 border-t border-bp-blueGum/10 pt-6">
+            <div className="min-w-0 flex-1 basis-65">
+              <p className="text-base font-semibold text-bp-blueGum">
+                Stay in the know
+              </p>
+              <p className="mt-1.5 text-sm leading-6 text-bp-blueGum/68">
+                What&apos;s changing in ACT planning, what the Lease Variation
+                Charge is doing to project numbers, and what we learn from
+                real Canberra blocks. Sent when there is something worth
+                knowing.
+              </p>
+            </div>
+            <StayInTheKnowForm
+              address={address}
+              zone={report?.zone.zoneCode ?? undefined}
+            />
           </div>
         </div>
 
@@ -335,7 +402,10 @@ export const ReportContent = ({ report, savedAddress }: Props) => {
 
       <div className="flex flex-col gap-2 border-t border-bp-blueGum/10 bg-stone-50 px-6 py-4 text-xs uppercase tracking-[0.16em] text-bp-blueGum/55 md:flex-row md:items-center md:justify-between md:px-10">
         <span>blockplanner.com.au</span>
-        <span>Covers freestanding houses in RZ1 and RZ2 only</span>
+        <span>
+          This tool covers freestanding houses in RZ1 and RZ2. We advise on
+          RZ3 and RZ4 separately.
+        </span>
       </div>
     </div>
   );

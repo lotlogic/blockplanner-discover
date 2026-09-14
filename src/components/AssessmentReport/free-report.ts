@@ -82,6 +82,12 @@ const normalizeCardBody = (value?: string | null) =>
     .trim()
     .replace(/[ \t]{2,}/g, " ");
 
+// The technical/category label under the title already carries this detail
+// (e.g. "Dual occupancy"), so a trailing "(...)" on the title itself - from
+// either PATHWAY_CONFIG or the backend's own card.title - is redundant.
+const stripTitleParenthetical = (value: string) =>
+  value.replace(/\s*\([^)]*\)\s*$/, "").trim();
+
 const formatArea = (value?: number | null) =>
   typeof value === "number" && Number.isFinite(value)
     ? `${value.toLocaleString("en-AU")} m²`
@@ -188,7 +194,7 @@ const buildFreeReportCardsFromBackend = (
     )
     .map((card) => ({
       key: String(card.pathwayKey),
-      title: String(card.title),
+      title: stripTitleParenthetical(String(card.title)),
       technical: String(card.technicalLabel || ""),
       body: normalizeCardBody(card.body),
       status: card.status,
@@ -238,7 +244,7 @@ export const buildFreeReportCards = (
     .filter((summary): summary is PathwaySummary => Boolean(summary))
     .map((summary) => ({
       key: summary.pathway,
-      title: summary.display.title,
+      title: stripTitleParenthetical(summary.display.title),
       technical: summary.display.technical,
       body: summary.body,
       status: summary.status,

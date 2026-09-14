@@ -13,7 +13,7 @@ import { PaymentModal, type CheckoutData } from "./PaymentModal";
 type Props = {
   data?: CheckoutData;
   isDisabled: boolean;
-  location: "mobile" | "desktop";
+  location: "mobile" | "desktop" | "inline";
 };
 
 export const FullReportCta = ({ data, isDisabled, location }: Props) => {
@@ -22,7 +22,11 @@ export const FullReportCta = ({ data, isDisabled, location }: Props) => {
   const [contactModalOpen, setContactModalOpen] = useState(false);
 
   const ctaLocation =
-    location === "mobile" ? "report_sticky" : "report_sidebar";
+    location === "mobile"
+      ? "report_sticky"
+      : location === "inline"
+        ? "report_inline"
+        : "report_sidebar";
 
   const ctaClasses =
     location === "mobile"
@@ -52,6 +56,89 @@ export const FullReportCta = ({ data, isDisabled, location }: Props) => {
       setPayModalOpen(true);
     }
   };
+
+  if (location === "inline") {
+    return (
+      <m.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.15, ease: "easeOut" }}
+        className="rounded-sm border border-bp-blueGum/10 bg-bp-sand px-6 py-8 md:px-8 md:py-9"
+      >
+        <div className="flex flex-wrap items-start gap-9">
+          <div className="min-w-0 flex-1 basis-75">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-bp-eucalypt">
+              The next step, if you want it
+            </p>
+            <Heading tag="h3" size="h3" className="mt-3 mb-0!">
+              A full report looks at what&apos;s on the ground
+            </Heading>
+            <p className="mt-4 text-sm leading-7 text-bp-blueGum/76">
+              We check each of the factors above against your title and
+              current imagery, then set out what they mean for your block, so
+              you get an honest picture of what&apos;s worth pursuing.
+            </p>
+            <p className="mt-4 text-sm leading-7 text-bp-blueGum/76">
+              Already know it&apos;s worth pursuing? Talk to Mitch directly.
+              We can kick off the planning and approvals process and manage
+              the project right through to approval, and we also do
+              financial feasibilities and massing studies.
+            </p>
+          </div>
+
+          <div className="min-w-0 flex-1 basis-75 rounded-sm border border-bp-blueGum/10 bg-white px-6 py-6">
+            <div className="flex flex-col gap-1">
+              <span className="text-3xl font-bold text-bp-blueGum">
+                $299
+              </span>
+              <span className="text-sm text-bp-blueGum/62">
+                Delivered within 48 hours
+              </span>
+            </div>
+            <div className="my-5 border-t border-bp-blueGum/10" />
+            <Button
+              label="Order your report"
+              leftIcon={<FileText className="size-5" />}
+              className={classList([
+                "w-full px-6 py-4",
+                { "animate-attention": !isDisabled },
+              ])}
+              onClick={openPaymentModal}
+              disabled={isDisabled}
+            />
+            <Button
+              label="Talk to Mitch directly"
+              variant="outline"
+              className="mt-2.5 min-h-13 w-full border-bp-blueGum/12! bg-white! px-6 py-4 text-bp-blueGum! hover:bg-gray-50! hover:text-bp-blueGum! focus-visible:bg-gray-50! focus-visible:text-bp-blueGum! focus-visible:outline-bp-blueGum!"
+              onClick={() => setContactModalOpen(true)}
+            />
+            <p className="mt-3 text-xs text-bp-blueGum/55">
+              Based on current satellite imagery and publicly available
+              spatial data. Site conditions may have changed.
+            </p>
+          </div>
+        </div>
+
+        <PaymentModal
+          isOpen={payModalOpen}
+          setIsOpen={setPayModalOpen}
+          ctaLocation={ctaLocation}
+          email={data?.email}
+          address={data?.address}
+          suburb={data?.suburb}
+          blockSizeM2={data?.blockSizeM2}
+          zone={data?.zone}
+        />
+
+        <ContactModal
+          isOpen={contactModalOpen}
+          setIsOpen={setContactModalOpen}
+          email={data?.email}
+          address={data?.address}
+        />
+      </m.div>
+    );
+  }
 
   // animation
   const initial =

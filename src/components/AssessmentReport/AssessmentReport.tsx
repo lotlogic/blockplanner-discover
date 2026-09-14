@@ -10,7 +10,6 @@ import { useLocalStorage, useSessionStorage } from "@uidotdev/usehooks";
 import { motion as m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { FullReportCta } from "../FullReportCta/FullReportCta";
 import ErrorMessage from "./ErrorMessage";
 import LoadingMessage from "./LoadingMessage";
 import CrownLeaseCheckoutModal from "./CrownLeaseCheckoutModal";
@@ -26,7 +25,7 @@ const MIN_LOADING_MS = 1800;
 export const FreeBlockAssessmentReport = () => {
   const [report, setReport] = useState<GeoApi>();
   const [isLoading, setIsLoading] = useState(true);
-  const [isOffZone, setIsOffZone] = useState(false);
+  const [, setIsOffZone] = useState(false);
   const [showOffZone, setShowOffZone] = useState(false);
   const [error, setError] = useState<string>();
   const [email, setEmail] = useState<string>();
@@ -301,7 +300,7 @@ export const FreeBlockAssessmentReport = () => {
 
       <section
         className={classList([
-          "mt-12 container mx-auto px-4 pb-60 lg:pb-12",
+          "mt-12 container mx-auto px-4 pb-12",
           {
             "blur-xs":
               showOffZone ||
@@ -311,76 +310,58 @@ export const FreeBlockAssessmentReport = () => {
           },
         ])}
       >
-        <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
-          <div className="flex-1 w-full lg:max-w-260">
-            <m.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.25, ease: "easeOut" }}
-            >
-              <Heading tag="h1" size="h1">
-                Your block assessment
-              </Heading>
-            </m.div>
-            <m.div
-              initial={{ y: 100 }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="relative mt-10"
-            >
-              <div className="overflow-hidden rounded-sm bg-white shadow-[-10px_0_22px_rgba(0,0,0,0.08),0_18px_50px_rgba(0,0,0,0.12)]">
-                {isLoading ? (
-                  <LoadingMessage />
-                ) : error ? (
-                  <ErrorMessage error={error} />
-                ) : isMediumDensityZone ? (
-                  <MediumDensityReportContent
-                    report={report}
-                    savedAddress={savedAddress}
-                    onRequestCall={openContactModal}
-                    onGetLease={openLeaseModal}
-                    onSubscribe={openSubscribeModal}
-                  />
-                ) : (
-                  <ReportContent report={report} savedAddress={savedAddress} />
-                )}
-              </div>
-            </m.div>
+        <div className="mx-auto w-full lg:max-w-260">
+          <m.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.25, ease: "easeOut" }}
+          >
+            <Heading tag="h1" size="h1">
+              Here&apos;s your snapshot
+            </Heading>
+          </m.div>
+          <m.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="relative mt-10"
+          >
+            <div className="overflow-hidden rounded-sm bg-white shadow-[-10px_0_22px_rgba(0,0,0,0.08),0_18px_50px_rgba(0,0,0,0.12)]">
+              {isLoading ? (
+                <LoadingMessage />
+              ) : error ? (
+                <ErrorMessage error={error} />
+              ) : isMediumDensityZone ? (
+                <MediumDensityReportContent
+                  report={report}
+                  savedAddress={savedAddress}
+                  onRequestCall={openContactModal}
+                  onGetLease={openLeaseModal}
+                  onSubscribe={openSubscribeModal}
+                />
+              ) : (
+                <ReportContent
+                  report={report}
+                  savedAddress={savedAddress}
+                  checkoutData={checkoutData}
+                />
+              )}
+            </div>
+          </m.div>
 
-            <section className="text-gray-400 text-center mt-8">
-              General information only, not professional advice. Results are
-              based on block size and zone - site conditions are assessed
-              separately.{" "}
-              <Link
-                to="/disclaimer"
-                className="font-medium underline underline-offset-3"
-              >
-                Read our full disclaimer.
-              </Link>
-            </section>
-          </div>
-
-          {!isMediumDensityZone && (
-            <FullReportCta
-              data={{
-                ...checkoutData,
-              }}
-              isDisabled={isLoading || isOffZone || !!error}
-              location="desktop"
-            />
-          )}
+          <section className="text-gray-400 text-center mt-8">
+            General information only, not professional advice. Results are
+            based on block size and zone - site conditions are assessed
+            separately.{" "}
+            <Link
+              to="/disclaimer"
+              className="font-medium underline underline-offset-3"
+            >
+              Read our full disclaimer.
+            </Link>
+          </section>
         </div>
       </section>
-
-      {!isMediumDensityZone && (
-        <FullReportCta
-          data={{
-            ...checkoutData,
-          }}
-          isDisabled={isLoading || isOffZone || !!error}
-          location="mobile"
-        />
-      )}
     </>
   );
 };
