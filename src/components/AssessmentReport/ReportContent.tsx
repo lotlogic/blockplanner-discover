@@ -147,20 +147,22 @@ export const ReportContent = ({
           </p>
           <div className="mt-4 space-y-4 text-sm leading-6 text-bp-blueGum/76">
             <p>
-              <strong className="font-semibold text-bp-blueGum">
-                Possible
-              </strong>{" "}
-              means the planning framework allows it on a block of this zone
-              and size. It doesn&apos;t yet account for what&apos;s already on
-              your land. We walk you through that below.
+              &apos;Zone allows&apos; means the zone and your block size
+              allow it. That is all this snapshot has checked.
             </p>
             <p>
-              Click{" "}
+              It has not looked at what decides whether a project works on
+              your block: your Crown lease, heritage, site access, trees,
+              easements and sewer. Any one of these can change the answer. A
+              full report checks each against your title and current
+              imagery.
+            </p>
+            <p>
+              Tap{" "}
               <strong className="font-semibold text-bp-blueGum">
-                See more
+                Learn more
               </strong>{" "}
-              on any option to understand the nuance and considerations that
-              come with it.
+              on any option for the detail.
             </p>
           </div>
         </div>
@@ -177,7 +179,7 @@ export const ReportContent = ({
                   : "border-stone-200 bg-stone-50 text-stone-700";
             const statusLabel =
               card.status === "possible"
-                ? "Possible"
+                ? "Zone allows"
                 : card.status === "review"
                   ? "Needs review"
                   : "Not available";
@@ -196,7 +198,7 @@ export const ReportContent = ({
                     onClick={() => toggleCard(card.key)}
                   >
                     <span
-                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusStyles}`}
+                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold tracking-[0.14em] ${card.status === "possible" ? "normal-case" : "uppercase"} ${statusStyles}`}
                     >
                       {statusLabel}
                     </span>
@@ -215,7 +217,7 @@ export const ReportContent = ({
                     aria-controls={bodyId}
                     onClick={() => toggleCard(card.key)}
                   >
-                    {isExpanded ? "Show less" : "See more"}
+                    {isExpanded ? "Show less" : "Learn more"}
                     <ChevronDown
                       className={`size-4 transition-transform ${
                         isExpanded ? "rotate-180" : ""
