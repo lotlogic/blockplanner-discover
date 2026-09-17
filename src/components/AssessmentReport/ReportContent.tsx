@@ -157,7 +157,7 @@ export const ReportContent = ({
             <p>
               It has not looked at what decides whether a project works on
               your block: heritage, site access, trees, easements and sewer.
-              There&apos;s more context on these in your report.
+              We unpack this more under your report.
             </p>
           </div>
         </div>
