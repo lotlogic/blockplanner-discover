@@ -147,22 +147,17 @@ export const ReportContent = ({
           </p>
           <div className="mt-4 space-y-4 text-sm leading-6 text-bp-blueGum/76">
             <p>
-              &apos;Zone allows&apos; means the zone and your block size
-              allow it. That is all this snapshot has checked.
-            </p>
-            <p>
-              It has not looked at what decides whether a project works on
-              your block: your Crown lease, heritage, site access, trees,
-              easements and sewer. Any one of these can change the answer. A
-              full report checks each against your title and current
-              imagery.
-            </p>
-            <p>
+              Listed below is what the property&apos;s zone and size permits.
               Tap{" "}
               <strong className="font-semibold text-bp-blueGum">
                 Learn more
               </strong>{" "}
               on any option for the detail.
+            </p>
+            <p>
+              It has not looked at what decides whether a project works on
+              your block: heritage, site access, trees, easements and sewer.
+              There&apos;s more context on these in your report.
             </p>
           </div>
         </div>
@@ -198,7 +193,7 @@ export const ReportContent = ({
                     onClick={() => toggleCard(card.key)}
                   >
                     <span
-                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold tracking-[0.14em] ${card.status === "possible" ? "normal-case" : "uppercase"} ${statusStyles}`}
+                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusStyles}`}
                     >
                       {statusLabel}
                     </span>
