@@ -147,20 +147,17 @@ export const ReportContent = ({
           </p>
           <div className="mt-4 space-y-4 text-sm leading-6 text-bp-blueGum/76">
             <p>
+              Listed below is what the property&apos;s zone and size permits.
+              Tap{" "}
               <strong className="font-semibold text-bp-blueGum">
-                Possible
+                Learn more
               </strong>{" "}
-              means the planning framework allows it on a block of this zone
-              and size. It doesn&apos;t yet account for what&apos;s already on
-              your land. We walk you through that below.
+              on any option for the detail.
             </p>
             <p>
-              Click{" "}
-              <strong className="font-semibold text-bp-blueGum">
-                See more
-              </strong>{" "}
-              on any option to understand the nuance and considerations that
-              come with it.
+              It has not looked at what decides whether a project works on
+              your block: heritage, site access, trees, easements and sewer.
+              We unpack this more under your report.
             </p>
           </div>
         </div>
@@ -177,7 +174,7 @@ export const ReportContent = ({
                   : "border-stone-200 bg-stone-50 text-stone-700";
             const statusLabel =
               card.status === "possible"
-                ? "Possible"
+                ? "Zone allows"
                 : card.status === "review"
                   ? "Needs review"
                   : "Not available";
@@ -215,7 +212,7 @@ export const ReportContent = ({
                     aria-controls={bodyId}
                     onClick={() => toggleCard(card.key)}
                   >
-                    {isExpanded ? "Show less" : "See more"}
+                    {isExpanded ? "Show less" : "Learn more"}
                     <ChevronDown
                       className={`size-4 transition-transform ${
                         isExpanded ? "rotate-180" : ""
