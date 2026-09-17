@@ -147,7 +147,10 @@ export const ReportContent = ({
           </p>
           <div className="mt-4 space-y-4 text-sm leading-6 text-bp-blueGum/76">
             <p>
-              Listed below is what the property&apos;s zone and size permits.
+              <strong className="font-semibold text-bp-blueGum">
+                Worth exploring
+              </strong>{" "}
+              means the property size and zoning permit this housing type.
               Tap{" "}
               <strong className="font-semibold text-bp-blueGum">
                 Learn more
@@ -174,7 +177,7 @@ export const ReportContent = ({
                   : "border-stone-200 bg-stone-50 text-stone-700";
             const statusLabel =
               card.status === "possible"
-                ? "Zone allows"
+                ? "Worth exploring"
                 : card.status === "review"
                   ? "Needs review"
                   : "Not available";
