@@ -6,8 +6,14 @@ import { getCheckoutSiteUrl } from "@/utils/publicPath";
 import { writeSessionStorageString } from "@/utils/sessionStorage";
 import { classList } from "@/utils/tailwind";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronDown, Mail, Target, User } from "lucide-react";
-import { useState } from "react";
+import {
+  CLIENT_ROLE_OPTIONS,
+  clientRoleSchema,
+  intentionOptionsFor,
+  intentionSchema,
+} from "@/components/Checkout/purchaser";
+import { Check, ChevronDown, House, Mail, Target, User } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 
@@ -16,17 +22,8 @@ const crownLeaseFormSchema = z.object({
   email: z
     .email({ pattern: z.regexes.rfc5322Email, message: "Invalid email format" })
     .trim(),
-  intention: z.enum(
-    [
-      "Sell",
-      "Develop myself",
-      "Have someone develop for me",
-      "Open to options",
-    ],
-    {
-      message: "Please select your primary intention",
-    },
-  ),
+  clientRole: clientRoleSchema,
+  intention: intentionSchema("Please select your primary intention"),
 });
 
 type CrownLeaseFormValues = z.infer<typeof crownLeaseFormSchema>;
@@ -57,11 +54,24 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
   const {
     register,
     handleSubmit,
+    watch,
+    getValues,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CrownLeaseFormValues>({
     resolver: zodResolver(crownLeaseFormSchema),
     defaultValues: { email: props.email || "", intention: undefined },
   });
+
+  const clientRole = watch("clientRole");
+  const intentionOptions = intentionOptionsFor(clientRole);
+
+  // "Sell" isn't offered to a buyer; clear it if they switch to buyer after picking it.
+  useEffect(() => {
+    if (clientRole === "buyer" && getValues("intention") === "Sell") {
+      setValue("intention", "" as never);
+    }
+  }, [clientRole, getValues, setValue]);
 
   const onSubmit: SubmitHandler<CrownLeaseFormValues> = async (formData) => {
     setSubmitError(undefined);
@@ -91,6 +101,7 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
             checkoutMode,
             productCode: "crown_lease",
             sourceApp: "discover",
+            clientRole: formData.clientRole,
             intention: formData.intention,
             email: formData.email,
             clientName: formData.clientName,
@@ -260,6 +271,39 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
 
         <div>
           <label>
+            <span className="sr-only">How are you connected to this property?</span>
+            <span className="relative block">
+              <House className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-gray-300" />
+              <ChevronDown className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-gray-500" />
+              <select
+                defaultValue=""
+                {...register("clientRole")}
+                aria-invalid={errors.clientRole ? "true" : "false"}
+                className={classList(
+                  "w-full appearance-none rounded-md border border-gray-300 bg-white py-3 pr-10 pl-11 text-gray-700",
+                  "focus-visible:border-transparent",
+                )}
+              >
+                <option value="" disabled>
+                  How are you connected to this property?
+                </option>
+                {CLIENT_ROLE_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </span>
+          </label>
+          {errors.clientRole && (
+            <p className="mt-1 pl-1 text-xs text-error" role="alert">
+              {errors.clientRole.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label>
             <span className="sr-only">Primary intention</span>
             <span className="relative block">
               <Target className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-gray-300" />
@@ -276,18 +320,11 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
                 <option value="" disabled>
                   What&apos;s your primary intention?
                 </option>
-                <option value="Sell">
-                  I want to sell and understand what it&apos;s worth
-                </option>
-                <option value="Develop myself">
-                  I want to develop it myself
-                </option>
-                <option value="Have someone develop for me">
-                  I want someone to develop it for me
-                </option>
-                <option value="Open to options">
-                  I&apos;m open to options - help me figure it out
-                </option>
+                {intentionOptions.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
               </select>
             </span>
           </label>
