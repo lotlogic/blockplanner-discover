@@ -10,6 +10,7 @@ import {
   CLIENT_ROLE_OPTIONS,
   clientRoleSchema,
   intentionOptionsFor,
+  intentionPromptFor,
   intentionSchema,
 } from "@/components/Checkout/purchaser";
 import { Check, ChevronDown, House, Mail, Target, User } from "lucide-react";
@@ -65,10 +66,13 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
 
   const clientRole = watch("clientRole");
   const intentionOptions = intentionOptionsFor(clientRole);
+  const intentionPrompt = intentionPromptFor(clientRole);
 
-  // "Sell" isn't offered to a buyer; clear it if they switch to buyer after picking it.
+  // The options depend on who they are (a buyer isn't offered "sell"); clear
+  // an answer that isn't on the new list when they change that.
   useEffect(() => {
-    if (clientRole === "buyer" && getValues("intention") === "Sell") {
+    const current = getValues("intention");
+    if (current && !intentionOptionsFor(clientRole).some((o) => o.value === current)) {
       setValue("intention", "" as never);
     }
   }, [clientRole, getValues, setValue]);
@@ -304,21 +308,23 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
 
         <div>
           <label>
-            <span className="sr-only">Primary intention</span>
+            <span className="sr-only">{intentionPrompt}</span>
             <span className="relative block">
               <Target className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-gray-300" />
               <ChevronDown className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-gray-500" />
               <select
                 defaultValue=""
                 {...register("intention")}
+                disabled={!clientRole}
                 aria-invalid={errors.intention ? "true" : "false"}
                 className={classList(
                   "w-full appearance-none rounded-md border border-gray-300 bg-white py-3 pr-10 pl-11 text-gray-700",
                   "focus-visible:border-transparent",
+                  "disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400",
                 )}
               >
                 <option value="" disabled>
-                  What&apos;s your primary intention?
+                  {intentionPrompt}
                 </option>
                 {intentionOptions.map((o) => (
                   <option key={o.value} value={o.value}>
@@ -328,7 +334,7 @@ export const CrownLeaseCheckoutModal = (props: Props) => {
               </select>
             </span>
           </label>
-          {errors.intention && (
+          {errors.intention && clientRole && (
             <p className="mt-1 pl-1 text-xs text-error" role="alert">
               {errors.intention.message}
             </p>
