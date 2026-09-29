@@ -21,7 +21,7 @@ export const INTENTION_OPTIONS = [
   { value: "Sell", label: "I want to sell and understand what it's worth" },
   { value: "Develop myself", label: "I want to develop it myself" },
   { value: "Have someone develop for me", label: "I want someone to develop it for me" },
-  { value: "Hold", label: "I'll hold it for now" },
+  { value: "Hold", label: "Keep it for now, plan for later" },
   { value: "Open to options", label: "I'm open to options - help me figure it out" },
 ] as const;
 
