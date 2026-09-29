@@ -6,7 +6,14 @@ import { isValidPhoneNumber } from "@/utils/phone";
 import { getCheckoutSiteUrl } from "@/utils/publicPath";
 import { classList } from "@/utils/tailwind";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, Mail, Phone, Target, User } from "lucide-react";
+import {
+  CLIENT_ROLE_OPTIONS,
+  clientRoleSchema,
+  intentionOptionsFor,
+  intentionSchema,
+} from "@/components/Checkout/purchaser";
+import { ChevronDown, House, Mail, Phone, Target, User } from "lucide-react";
+import { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 
@@ -14,17 +21,8 @@ const paymentFormSchema = z.object({
   email: z
     .email({ pattern: z.regexes.rfc5322Email, message: "Invalid email format" })
     .trim(),
-  intention: z.enum(
-    [
-      "Sell",
-      "Develop myself",
-      "Have someone develop for me",
-      "Open to options",
-    ],
-    {
-      message: "Please select from above",
-    },
-  ),
+  clientRole: clientRoleSchema,
+  intention: intentionSchema("Please select from above"),
   clientName: z.string().trim().min(2, "Please enter a name"),
   clientPhone: z
     .string()
@@ -67,10 +65,23 @@ export const PaymentModal = (props: Props) => {
   const {
     register,
     handleSubmit,
+    watch,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentFormSchema),
   });
+
+  const clientRole = watch("clientRole");
+  const intentionOptions = intentionOptionsFor(clientRole);
+
+  // "Sell" isn't offered to a buyer; clear it if they switch to buyer after picking it.
+  useEffect(() => {
+    if (clientRole === "buyer" && getValues("intention") === "Sell") {
+      setValue("intention", "" as never);
+    }
+  }, [clientRole, getValues, setValue]);
 
   const onSubmit: SubmitHandler<PaymentFormValues> = async (formData) => {
     try {
@@ -90,6 +101,7 @@ export const PaymentModal = (props: Props) => {
         zone: props.zone,
         block_size: props.blockSizeM2,
         suburb: props.suburb,
+        client_role: formData.clientRole,
         intention: formData.intention,
         timestamp: new Date().toISOString(),
       });
@@ -108,6 +120,7 @@ export const PaymentModal = (props: Props) => {
             productCode: "site_report",
             sourceApp: "discover",
 
+            clientRole: formData.clientRole,
             intention: formData.intention,
 
             // Backwards-compatible alias
@@ -177,6 +190,42 @@ export const PaymentModal = (props: Props) => {
       >
         <div>
           <label>
+            <span className="sr-only">How are you connected to this property?</span>
+            <span className="relative">
+              <House className="absolute top-1/2 left-3 size-6 -translate-y-1/2 text-gray-300 pointer-events-none" />
+              <ChevronDown className="absolute top-1/2 right-4 size-5 -translate-y-1/2 text-gray-500 pointer-events-none" />
+              <select
+                defaultValue=""
+                {...register("clientRole")}
+                aria-invalid={errors.clientRole ? "true" : "false"}
+                className={classList(
+                  "w-full py-3 pl-12 pr-10 appearance-none",
+                  "bg-white text-gray-700",
+                  "border border-gray-300 rounded-md",
+                  "focus-visible:border-transparent",
+                  "invalid:text-gray-500",
+                )}
+              >
+                <option value="" disabled>
+                  How are you connected to this property?
+                </option>
+                {CLIENT_ROLE_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </span>
+          </label>
+          {errors.clientRole && (
+            <p className="text-xs text-error pl-1 mt-1" role="alert">
+              {errors.clientRole.message as string}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label>
             <span className="sr-only">What's your primary intention?</span>
             <span className="relative">
               <Target className="absolute top-1/2 left-3 size-6 -translate-y-1/2 text-gray-300 pointer-events-none" />
@@ -196,18 +245,11 @@ export const PaymentModal = (props: Props) => {
                 <option value="" disabled>
                   What's your primary intention?
                 </option>
-                <option value="Sell">
-                  I want to sell and understand what it's worth
-                </option>
-                <option value="Develop myself">
-                  I want to develop it myself
-                </option>
-                <option value="Have someone develop for me">
-                  I want someone to develop it for me
-                </option>
-                <option value="Open to options">
-                  I'm open to options - help me figure it out
-                </option>
+                {intentionOptions.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
               </select>
             </span>
           </label>
