@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
+import { isIntakeConfigured, sendToIntake } from "@/utils/intake";
 
 const staySubscribeSchema = z.object({
   email: z
@@ -26,8 +27,9 @@ type Props = {
   zone?: string;
 };
 
-// Inline counterpart to UpdatesSubscribeModal.tsx - same Monday.com lead
-// path, tracking, and consent checkbox, without the modal chrome.
+// Inline counterpart to UpdatesSubscribeModal.tsx - same lead path (the
+// intake service, or the backend when that isn't configured), tracking and
+// consent checkbox, without the modal chrome.
 export const StayInTheKnowForm = ({ address, zone }: Props) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string>();
@@ -47,28 +49,35 @@ export const StayInTheKnowForm = ({ address, zone }: Props) => {
 
     try {
       const timestamp = new Date().toISOString();
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/monday/product-leads`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            leadType: "contact_request",
-            email: formData.email,
-            address,
-            requestType: `${zone || "Planning"} updates subscription`,
-            message: `Subscribed to BlockPlanner planning guides and updates from the ${zone || "property"} result.`,
-            sourceApp: "discover",
-            timestamp,
-          }),
-        },
-      );
+      const payload = {
+        leadType: "contact_request",
+        email: formData.email,
+        address,
+        requestType: `${zone || "Planning"} updates subscription`,
+        message: `Subscribed to BlockPlanner planning guides and updates from the ${zone || "property"} result.`,
+        sourceApp: "discover",
+        timestamp,
+      };
 
-      if (!response.ok) {
-        const responseBody = (await response.json().catch(() => ({}))) as {
-          message?: string;
-        };
-        throw new Error(responseBody.message || "Subscription failed");
+      if (isIntakeConfigured()) {
+        if (!(await sendToIntake(payload)))
+          throw new Error("Subscription failed");
+      } else {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/monday/product-leads`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          },
+        );
+
+        if (!response.ok) {
+          const responseBody = (await response.json().catch(() => ({}))) as {
+            message?: string;
+          };
+          throw new Error(responseBody.message || "Subscription failed");
+        }
       }
 
       identifyUser(formData.email, {

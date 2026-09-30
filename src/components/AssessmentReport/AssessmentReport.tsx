@@ -18,6 +18,7 @@ import MediumDensityReportContent from "./MediumDensityReportContent";
 import OffZoneForm, { type OffZoneFormValues } from "./OffZoneForm";
 import ReportContent from "./ReportContent";
 import UpdatesSubscribeModal from "./UpdatesSubscribeModal";
+import { sendToIntake } from "@/utils/intake";
 
 type ReportSaves = Record<string, { email: string; expiry: number }>;
 const MIN_LOADING_MS = 1800;
@@ -222,24 +223,27 @@ export const FreeBlockAssessmentReport = () => {
         });
 
         // Submit the contact request to the configured backend workflow.
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/enquiry/get-in-touch`,
-          {
+        // The backend emails Mitch; the intake service puts it on the Airtable
+        // Leads board. Either one arriving is enough.
+        const enquiry = {
+          ...userData,
+          requestType: "Off-zone enquiry",
+          message: "This is an off-zone enquiry",
+          company: formData.company,
+        };
+        const [backendOk, intakeOk] = await Promise.all([
+          fetch(`${import.meta.env.VITE_API_URL}/api/enquiry/get-in-touch`, {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ...userData,
-              requestType: "Off-zone enquiry",
-              message: "This is an off-zone enquiry",
-              company: formData.company,
-            }),
-          },
-        );
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(enquiry),
+          })
+            .then((response) => response.ok)
+            .catch(() => false),
+          sendToIntake(enquiry),
+        ]);
 
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (!backendOk && !intakeOk)
+          throw new Error("Enquiry could not be sent");
       } catch (error: any) {
         trackEvent("feasibility_form_error", {
           ...userData,
