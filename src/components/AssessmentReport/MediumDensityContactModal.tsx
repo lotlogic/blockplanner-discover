@@ -9,6 +9,7 @@ import { ChevronDown, Mail, Phone, Target, User } from "lucide-react";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { sendToIntake } from "@/utils/intake";
 
 const intentOptions = [
   "Sell",
@@ -149,21 +150,24 @@ export const MediumDensityContactModal = (props: Props) => {
         timestamp: new Date().toISOString(),
       });
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/enquiry/get-in-touch`,
-        {
+      // The backend emails Mitch; the intake service puts it on the Airtable
+      // Leads board. Either one arriving is enough.
+      const enquiry = {
+        ...userData,
+        company: formData.company,
+      };
+      const [backendOk, intakeOk] = await Promise.all([
+        fetch(`${import.meta.env.VITE_API_URL}/api/enquiry/get-in-touch`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...userData,
-            company: formData.company,
-          }),
-        },
-      );
+          body: JSON.stringify(enquiry),
+        })
+          .then((response) => response.ok)
+          .catch(() => false),
+        sendToIntake(enquiry),
+      ]);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!backendOk && !intakeOk) throw new Error("Enquiry could not be sent");
 
       setIsSubmitted(true);
     } catch (error) {
