@@ -1,4 +1,4 @@
-import type { GeoApi, LotCheckPathwayCard, LotRule } from "@/@types/api";
+import type { GeoApi, PathwayCard, LotRule } from "@/@types/api";
 
 export type FreeReportCardStatus = "possible" | "not_available" | "review";
 
@@ -182,7 +182,7 @@ const buildPathwaySummary = (
 };
 
 const buildFreeReportCardsFromBackend = (
-  backendCards?: LotCheckPathwayCard[] | null,
+  backendCards?: PathwayCard[] | null,
 ): FreeReportCard[] => {
   const cards = (backendCards ?? [])
     .filter(
@@ -217,13 +217,13 @@ export const buildFreeReportCards = (
   report?: GeoApi,
 ): FreeReportCard[] => {
   const backendCards = buildFreeReportCardsFromBackend(
-    report?.lotCheckRules?.cards,
+    report?.pathwayRules?.cards,
   );
   if (backendCards.length) {
     return backendCards;
   }
 
-  const matches = report?.lotCheckRules?.matches || [];
+  const matches = report?.pathwayRules?.matches || [];
   const grouped = new Map<string, LotRule[]>();
 
   matches.forEach((match) => {
@@ -238,7 +238,7 @@ export const buildFreeReportCards = (
     buildPathwaySummary(
       pathway,
       grouped.get(pathway) || [],
-      report?.lotCheckRules?.blockAreaSqm ?? null,
+      report?.pathwayRules?.blockAreaSqm ?? null,
     ),
   )
     .filter((summary): summary is PathwaySummary => Boolean(summary))

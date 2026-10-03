@@ -24,7 +24,7 @@ export const MediumDensityReportContent = ({
 }: Props) => {
   const zoneCode = (
     report?.zone.zoneCode ||
-    report?.lotCheckRules.zoneCode ||
+    report?.pathwayRules.zoneCode ||
     ""
   ).toUpperCase();
   const storeys = MEDIUM_DENSITY_HEIGHTS[zoneCode];
@@ -63,9 +63,9 @@ export const MediumDensityReportContent = ({
           <span className="rounded-full bg-bp-blueGum px-3 py-1 font-medium uppercase tracking-[0.12em] text-bp-sand">
             {zoneCode}
           </span>
-          {!!report?.lotCheckRules.blockAreaSqm && (
+          {!!report?.pathwayRules.blockAreaSqm && (
             <span className="rounded-full border border-bp-blueGum/15 bg-white px-3 py-1 text-bp-blueGum/75">
-              {report.lotCheckRules.blockAreaSqm.toLocaleString("en-AU")} m²
+              {report.pathwayRules.blockAreaSqm.toLocaleString("en-AU")} m²
             </span>
           )}
         </div>

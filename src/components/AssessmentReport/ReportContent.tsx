@@ -116,9 +116,9 @@ export const ReportContent = ({
               {zoneText}
             </span>
           )}
-          {!!report?.lotCheckRules.blockAreaSqm && (
+          {!!report?.pathwayRules.blockAreaSqm && (
             <span className="rounded-full border border-bp-blueGum/15 bg-white px-3 py-1 text-bp-blueGum/75">
-              {report.lotCheckRules.blockAreaSqm.toLocaleString("en-AU")} m²
+              {report.pathwayRules.blockAreaSqm.toLocaleString("en-AU")} m²
             </span>
           )}
         </div>

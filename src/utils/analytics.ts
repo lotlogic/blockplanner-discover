@@ -1,4 +1,4 @@
-import type { GeoApi, LotCheckPathwayCard, LotRule } from "@/@types/api";
+import type { GeoApi, PathwayCard, LotRule } from "@/@types/api";
 import mixpanel from "mixpanel-browser";
 
 const MIXPANEL_TOKEN = String(import.meta.env.VITE_MIXPANEL_TOKEN || "").trim();
@@ -71,7 +71,7 @@ const buildRuleOutputs = (matches?: LotRule[]) =>
     evaluation: match.evaluation,
   }));
 
-const buildPathwayCardOutputs = (cards?: LotCheckPathwayCard[]) =>
+const buildPathwayCardOutputs = (cards?: PathwayCard[]) =>
   (cards ?? []).map((card) => ({
     pathway_key: card.pathwayKey,
     title: card.title,
@@ -92,7 +92,7 @@ const getParcelId = (report: GeoApi) => {
 };
 
 const getBlockSize = (report: GeoApi) =>
-  report?.lotCheckRules?.blockAreaSqm ??
+  report?.pathwayRules?.blockAreaSqm ??
   report?.block?.derivedAreaSqm ??
   report?.block?.properties?.BLOCK_DERIVED_AREA ??
   null;
@@ -104,15 +104,15 @@ export const trackLookupPerformed = (
   if (!report) return;
 
   const address = overrides?.address ?? report.formattedAddress;
-  const zone = report.lotCheckRules?.zoneCode ?? report.zone?.zoneCode ?? null;
+  const zone = report.pathwayRules?.zoneCode ?? report.zone?.zoneCode ?? null;
 
   trackEvent("lookup_performed", {
     address,
     parcel_id: getParcelId(report),
     block_size: getBlockSize(report),
     zone,
-    rule_outputs: buildRuleOutputs(report.lotCheckRules?.matches),
-    pathway_cards: buildPathwayCardOutputs(report.lotCheckRules?.cards),
+    rule_outputs: buildRuleOutputs(report.pathwayRules?.matches),
+    pathway_cards: buildPathwayCardOutputs(report.pathwayRules?.cards),
     timestamp: new Date().toISOString(),
   });
 };
