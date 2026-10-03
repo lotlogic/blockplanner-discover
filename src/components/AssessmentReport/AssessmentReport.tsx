@@ -18,6 +18,7 @@ import MediumDensityReportContent from "./MediumDensityReportContent";
 import OffZoneForm, { type OffZoneFormValues } from "./OffZoneForm";
 import ReportContent from "./ReportContent";
 import UpdatesSubscribeModal from "./UpdatesSubscribeModal";
+import { submitEnquiry } from "@/utils/intake";
 
 type ReportSaves = Record<string, { email: string; expiry: number }>;
 const MIN_LOADING_MS = 1800;
@@ -221,25 +222,13 @@ export const FreeBlockAssessmentReport = () => {
           timestamp: new Date().toISOString(),
         });
 
-        // Submit the contact request to the configured backend workflow.
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/enquiry/get-in-touch`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ...userData,
-              requestType: "Off-zone enquiry",
-              message: "This is an off-zone enquiry",
-              company: formData.company,
-            }),
-          },
-        );
-
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
+        // Send the enquiry to the intake Worker, which records it in Airtable.
+        await submitEnquiry({
+          ...userData,
+          requestType: "Off-zone enquiry",
+          message: "This is an off-zone enquiry",
+          company: formData.company,
+        });
       } catch (error: any) {
         trackEvent("feasibility_form_error", {
           ...userData,

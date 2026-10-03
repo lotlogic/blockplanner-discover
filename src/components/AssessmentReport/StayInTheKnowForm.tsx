@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
+import { submitEnquiry } from "@/utils/intake";
 
 const staySubscribeSchema = z.object({
   email: z
@@ -40,36 +41,20 @@ export const StayInTheKnowForm = ({ address, zone }: Props) => {
     resolver: zodResolver(staySubscribeSchema),
   });
 
-  const onSubmit: SubmitHandler<StaySubscribeFormValues> = async (
-    formData,
-  ) => {
+  const onSubmit: SubmitHandler<StaySubscribeFormValues> = async (formData) => {
     setSubmitError(undefined);
 
     try {
       const timestamp = new Date().toISOString();
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/monday/product-leads`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            leadType: "contact_request",
-            email: formData.email,
-            address,
-            requestType: `${zone || "Planning"} updates subscription`,
-            message: `Subscribed to BlockPlanner planning guides and updates from the ${zone || "property"} result.`,
-            sourceApp: "discover",
-            timestamp,
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        const responseBody = (await response.json().catch(() => ({}))) as {
-          message?: string;
-        };
-        throw new Error(responseBody.message || "Subscription failed");
-      }
+      await submitEnquiry({
+        leadType: "contact_request",
+        email: formData.email,
+        address,
+        requestType: `${zone || "Planning"} updates subscription`,
+        message: `Subscribed to BlockPlanner planning guides and updates from the ${zone || "property"} result.`,
+        sourceApp: "discover",
+        timestamp,
+      });
 
       identifyUser(formData.email, {
         address,
@@ -155,8 +140,8 @@ export const StayInTheKnowForm = ({ address, zone }: Props) => {
           />
           <Check className="pointer-events-none absolute top-1 left-px hidden size-4 p-px outline-none peer-checked:block" />
           <span className="text-left text-sm leading-6 text-bp-blueGum/72">
-            I agree to receive occasional BlockPlanner planning updates. I
-            can unsubscribe at any time. See the{" "}
+            I agree to receive occasional BlockPlanner planning updates. I can
+            unsubscribe at any time. See the{" "}
             <Link
               to="/privacy"
               target="_blank"

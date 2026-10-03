@@ -9,6 +9,7 @@ import { ChevronDown, Mail, Phone, Target, User } from "lucide-react";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { submitEnquiry } from "@/utils/intake";
 
 const intentOptions = [
   "Sell",
@@ -22,13 +23,9 @@ const contactFormSchema = z.object({
     .email({ pattern: z.regexes.rfc5322Email, message: "Invalid email format" })
     .trim(),
   clientName: z.string().trim().min(2, "Please enter a name"),
-  clientPhone: z
-    .string()
-    .trim()
-    .refine(isValidPhoneNumber, {
-      message:
-        "Enter a valid phone number, including country code if overseas",
-    }),
+  clientPhone: z.string().trim().refine(isValidPhoneNumber, {
+    message: "Enter a valid phone number, including country code if overseas",
+  }),
   intent: z.enum(intentOptions, {
     message: "Please select your intent",
   }),
@@ -86,25 +83,13 @@ export const ContactModal = (props: Props) => {
         timestamp: new Date().toISOString(),
       });
 
-      // Submit the contact request to the configured backend workflow.
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/enquiry/get-in-touch`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...userData,
-            requestType: "Free report contact enquiry",
-            message: "Free report contact enquiry",
-            company: formData.company,
-          }),
-        },
-      );
-
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Send the enquiry to the intake Worker, which records it in Airtable.
+      await submitEnquiry({
+        ...userData,
+        requestType: "Free report contact enquiry",
+        message: "Free report contact enquiry",
+        company: formData.company,
+      });
 
       setIsSubmitted(true);
     } catch (error: any) {

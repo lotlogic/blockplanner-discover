@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
+import { submitEnquiry } from "@/utils/intake";
 
 const subscribeFormSchema = z.object({
   email: z
@@ -57,29 +58,15 @@ export const UpdatesSubscribeModal = (props: Props) => {
 
     try {
       const timestamp = new Date().toISOString();
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/monday/product-leads`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            leadType: "contact_request",
-            email: formData.email,
-            address: props.address,
-            requestType: `${props.zone || "Planning"} updates subscription`,
-            message: `Subscribed to BlockPlanner planning guides and updates from the ${props.zone || "property"} result.`,
-            sourceApp: "discover",
-            timestamp,
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        const responseBody = (await response.json().catch(() => ({}))) as {
-          message?: string;
-        };
-        throw new Error(responseBody.message || "Subscription failed");
-      }
+      await submitEnquiry({
+        leadType: "contact_request",
+        email: formData.email,
+        address: props.address,
+        requestType: `${props.zone || "Planning"} updates subscription`,
+        message: `Subscribed to BlockPlanner planning guides and updates from the ${props.zone || "property"} result.`,
+        sourceApp: "discover",
+        timestamp,
+      });
 
       identifyUser(formData.email, {
         address: props.address,
