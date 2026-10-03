@@ -1,3 +1,4 @@
+import { STAFFORD_API_URL } from "@/utils/staffordApi";
 import type { GeoApi } from "@/@types/api";
 import Heading from "@/components/ui/Heading";
 import {
@@ -76,7 +77,7 @@ export const FreeBlockAssessmentReport = () => {
         }
 
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/geo/act-zone?${params.toString()}`,
+          `${STAFFORD_API_URL}/api/geo/act-zone?${params.toString()}`,
         );
 
         if (!response.ok)
