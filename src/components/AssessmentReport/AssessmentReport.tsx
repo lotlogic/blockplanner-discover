@@ -83,7 +83,10 @@ export const FreeBlockAssessmentReport = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const result = await response.json();
-        if (!cancelled) setReport(result);
+        // The old backend named the rules lotCheckRules; Stafford's API sends
+        // pathwayRules. Accept either until the old backend is retired.
+        if (!cancelled)
+          setReport({ ...result, pathwayRules: result.pathwayRules ?? result.lotCheckRules });
       } catch (error: any) {
         if (!cancelled) setError(error.message);
       } finally {
@@ -139,7 +142,7 @@ export const FreeBlockAssessmentReport = () => {
 
     const zoneCode = (
       report.zone.zoneCode ||
-      report.lotCheckRules.zoneCode ||
+      report.pathwayRules.zoneCode ||
       ""
     ).toUpperCase();
     const isStandardReportZone = ["RZ1", "RZ2"].includes(zoneCode);
@@ -152,7 +155,7 @@ export const FreeBlockAssessmentReport = () => {
 
   const zoneCode = (
     report?.zone.zoneCode ||
-    report?.lotCheckRules.zoneCode ||
+    report?.pathwayRules.zoneCode ||
     ""
   ).toUpperCase();
   const isMediumDensityZone = ["RZ3", "RZ4"].includes(zoneCode);
@@ -165,7 +168,7 @@ export const FreeBlockAssessmentReport = () => {
     address: report?.formattedAddress || savedAddress,
     suburb: report?.block?.properties?.DIVISION_NAME || undefined,
     zone: zoneCode,
-    blockSizeM2: report?.lotCheckRules?.blockAreaSqm,
+    blockSizeM2: report?.pathwayRules?.blockAreaSqm,
   };
 
   const openContactModal = () => {

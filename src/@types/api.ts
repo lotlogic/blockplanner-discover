@@ -7,11 +7,11 @@ export type GeoApi = {
   source: string;
   block: Block;
   zone: Zone;
-  lotCheckRules: {
+  pathwayRules: {
     zoneCode: string;
     blockAreaSqm: number;
     matches: LotRule[];
-    cards?: LotCheckPathwayCard[];
+    cards?: PathwayCard[];
   };
 };
 
@@ -100,7 +100,7 @@ export type LotRule = {
   };
 };
 
-export type LotCheckPathwayCard = {
+export type PathwayCard = {
   zone: string | null;
   pathwayKey: string | null;
   title: string | null;
