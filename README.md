@@ -77,6 +77,7 @@ Create `.env` from `.env.example` for local development:
 
 ```env
 VITE_API_URL="https://your-api.example.com"
+VITE_INTAKE_URL="https://blockplanner-intake.mitch-d6b.workers.dev"
 VITE_GOOGLE_MAPS_API_KEY="your_browser_restricted_google_maps_key"
 VITE_MIXPANEL_TOKEN=""
 VITE_STRIPE_CHECKOUT_MODE="live"
@@ -85,6 +86,8 @@ VITE_COMMENCEMENT_DATE=""
 
 - `VITE_API_URL` is the shared BlockPlanner backend URL without a trailing
   slash.
+- `VITE_INTAKE_URL` is the lead intake Worker without a trailing slash. It
+  must list the Discover origins in its `ALLOWED_ORIGINS` setting.
 - `VITE_GOOGLE_MAPS_API_KEY` enables Places autocomplete and report maps. It
   must be restricted to the approved browser origins and Google APIs.
 - `VITE_MIXPANEL_TOKEN` enables explicit Mixpanel events. Analytics remain
@@ -123,9 +126,14 @@ Discover uses the shared LotLogic and BlockPlanner backend configured by
 `VITE_API_URL`. The frontend calls:
 
 - `GET /api/geo/act-zone` for ACT zoning and assessment data
-- `POST /api/monday/product-leads` for subscriptions and product leads
-- `POST /api/enquiry/get-in-touch` for contact and request-a-call submissions
 - `POST /api/stripe/create-checkout-session` for paid checkout
+
+Subscriptions, contact, request-a-call and off-zone enquiries do not use the
+shared backend. They post to the `blockplanner-intake` Cloudflare Worker
+(`VITE_INTAKE_URL`, path `/enquiry`), which writes each one to the Leads table
+in the BlockPlanner CRM Airtable base. The same Worker receives Stripe's
+payment webhook and records paid orders there. monday.com is no longer used
+by Discover.
 
 The backend is responsible for:
 

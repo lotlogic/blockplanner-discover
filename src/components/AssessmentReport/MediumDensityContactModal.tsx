@@ -9,6 +9,7 @@ import { ChevronDown, Mail, Phone, Target, User } from "lucide-react";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { submitEnquiry } from "@/utils/intake";
 
 const intentOptions = [
   "Sell",
@@ -24,13 +25,9 @@ const contactFormSchema = z.object({
   email: z
     .email({ pattern: z.regexes.rfc5322Email, message: "Invalid email format" })
     .trim(),
-  clientPhone: z
-    .string()
-    .trim()
-    .refine(isValidPhoneNumber, {
-      message:
-        "Enter a valid phone number, including country code if overseas",
-    }),
+  clientPhone: z.string().trim().refine(isValidPhoneNumber, {
+    message: "Enter a valid phone number, including country code if overseas",
+  }),
   intent: z.enum(intentOptions, {
     message: "Please select your primary intention",
   }),
@@ -149,21 +146,10 @@ export const MediumDensityContactModal = (props: Props) => {
         timestamp: new Date().toISOString(),
       });
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/enquiry/get-in-touch`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...userData,
-            company: formData.company,
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      await submitEnquiry({
+        ...userData,
+        company: formData.company,
+      });
 
       setIsSubmitted(true);
     } catch (error) {
